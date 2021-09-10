@@ -210,8 +210,8 @@ wss.short.year<-dplyr::pull(wss.short.year, YEAR)
 
 
 wss.short.ts.trend<-model_trend(ind_tbl=wss.short.responses, time=wss.short.year)
-wss.short.ts.trend.pd<-plot_diagnostics(wss.short.ts.trend$model)
-wss.short.ts.trend.pt<-plot_diagnostics(wss.short.ts.trend$model)
+# wss.short.ts.trend.pd<-plot_diagnostics(wss.short.ts.trend$model)
+# wss.short.ts.trend.pt<-plot_diagnostics(wss.short.ts.trend$model)
 
 ```
 
@@ -226,9 +226,11 @@ wss.short.data_init<-ind_init(ind_tbl=wss.short.responses, press_tbl=wss.short.p
 ```{r}
 wss.short.m_gam<-model_gam(init_tbl=wss.short.data_init)
 
-p.wss.short<-plot_model(init_tbl=data_init, mod_tbl=wss.short.m_gam)
+p.wss.short<-plot_model(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
 
 wss.short.m_gamm<-model_gamm(init_tbl=wss.short.data_init, filter=wss.short.m_gam$tac, excl_outlier=NULL)
+
+wss.short.best_gamm<-select_model(gam_tbl=wss.short.m_gam, gamm_tbl=wss.short.m_gamm)
 ```
 
 
@@ -236,13 +238,13 @@ wss.short.m_gamm<-model_gamm(init_tbl=wss.short.data_init, filter=wss.short.m_ga
 
 # Derivatives WSS short
 ```{r}
-wss.short.calc<-calc_deriv(init_tbl=data_init, mod_tbl=m_gam)
+wss.short.calc<-calc_deriv(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
 ```
 # Pressure indicators WSS short
 ```{r}
-it<-select_interaction(mod_tbl=wss.short.calc)
+wss.short.it<-select_interaction(mod_tbl=wss.short.calc)
 
-wss.short.m_all<-test_interaction(init_tbl=data_init, mod_tbl=wss.short.calc, interactions=it)
+wss.short.m_all<-test_interaction(init_tbl=wss.short.data_init, mod_tbl=wss.short.calc, interactions=wss.short.it)
 ```
 
 # set up WSS long
@@ -265,12 +267,12 @@ wss.long.year<-long.pressures %>%
 wss.long.year$YEAR<-as.numeric(wss.long.year$YEAR)
 wss.long.year<-dplyr::pull(wss.long.year, YEAR)
 
-wss.long.ts.trend<-model_trend(ind_tbl=wss.long.responses, time=long.year)
+wss.long.ts.trend<-model_trend(ind_tbl=wss.long.responses, time=wss.long.year)
 ###wss.long.ts.trend.pd<-plot_diagnostics(wss.long.ts.trend$model)
 
 
 #Data initialization
-wss.long.data_init<-ind_init(ind_tbl=wss.long.responses, press_tbl=wss.long.pressures, time=long.year)
+wss.long.data_init<-ind_init(ind_tbl=wss.long.responses, press_tbl=wss.long.pressures, time=wss.long.year)
 
 #GAM and GAMMs
 wss.long.m_gam<-model_gam(init_tbl=wss.long.data_init)
@@ -278,6 +280,8 @@ wss.long.m_gam<-model_gam(init_tbl=wss.long.data_init)
 p.wss.long<-plot_model(init_tbl=wss.long.data_init, mod_tbl=wss.long.m_gam)
 
 wss.long.m_gamm<-model_gamm(init_tbl=wss.long.data_init, filter=wss.long.m_gam$tac, excl_outlier=NULL)
+
+wss.long.best_gamm<-select_model(gam_tbl=wss.long.m_gam, gamm_tbl=wss.long.m_gamm)
 ```
 
 
@@ -321,6 +325,8 @@ ess.long.m_gam<-model_gam(init_tbl=ess.long.data_init)
 p.ess.long<-plot_model(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
 
 ess.long.m_gamm<-model_gamm(init_tbl=ess.long.data_init, filter=ess.long.m_gam$tac, excl_outlier=NULL)
+
+ess.long.best_gamm<-select_model(gam_tbl=ess.long.m_gam, gamm_tbl=ess.long.m_gamm)
 ```
 
 
