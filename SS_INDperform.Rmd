@@ -8,13 +8,12 @@ output: html_document
 ## set up libraries
 ```{r setup, include=FALSE}
 library(DT)
-library(mgcv)
-library(shiny)
+# library(mgcv)
 library(tidyverse)
 library(MARSS)
 library(reshape2)
-require(meboot)
-library(mgcv)
+# require(meboot)
+# library(mgcv)
 library(INDperform)
 ```
 
@@ -119,7 +118,24 @@ long.pressures<- dplyr::select(pressures, "YEAR", "ID",
                            "Air_Temperature", "AMO", "CIL_Volume", "Density", "Ice_Area", "Ice_Volume",
                            "NAO_Winter", "Salinity", "Stratification", "Bottom_Temp", "Bottom_Temp_Shelf")
 
+long.pressures1<- dplyr::select(pressures, "YEAR", "ID",
+                           
+                           "Diversity_Target_Spp" = "DiversityTargetSpp_ALL",
+                           "MeanTL_Landings" = "MeanTL.Landings",
+                           "MTI" = "MTI.Landings_3.25",
+                           "Fishing_Pressure" = "FP_ALL",
+                           "FP_Clupeids" = "FP_CLUPEIDS",
+                           "Skates_Landings" = "landings_SKATES.L",
+                           "Flatfish_Landings" = "landings_FLATFISH.L",
+                           "Large_Pelagic_Landings" = "landings_LARGE_PELAGIC.L" ,
+                           "Total_Landings" = "landings_ALL")
 
+long.pressures2<- dplyr::select(pressures, "YEAR", "ID",
+                           "MAFA1", "MAFA2", 
+                           
+                           "Air_Temperature", "AMO", "CIL_Volume", "Density", "Ice_Area", "Ice_Volume",
+                           "NAO_Winter", "Salinity", "Stratification", "Bottom_Temp", "Bottom_Temp_Shelf")
+                    
 
 short.pressures <- dplyr::select(pressures, "YEAR", "ID",
                            "MAFA1", "MAFA2",
@@ -179,7 +195,65 @@ short.pressures <- dplyr::select(pressures, "YEAR", "ID",
                            "Bloom_Amplitude", 
                            "Bloom_Magnitude")
 
+short.pressures1 <- dplyr::select(pressures, "YEAR", "ID",
+                
+                           "Diversity_Target_Spp" = "DiversityTargetSpp_ALL",
+                           "MeanTL_Landings" = "MeanTL.Landings",
+                           "MTI" = "MTI.Landings_3.25",
+                           "Fishing_Pressure" = "FP_ALL",
+                           "FP_Clupeids" = "FP_CLUPEIDS",
+                           "Skates_Landings" = "landings_SKATES.L",
+                           "Flatfish_Landings" = "landings_FLATFISH.L",
+                           "Large_Pelagic_Landings" = "landings_LARGE_PELAGIC.L" ,
+                           "Total_Landings" = "landings_ALL",
+                           "Air_Temperature",
+                           "AMO", 
+                           "CIL_Volume", 
+                           "Density", 
+                           "Ice_Area", 
+                           "Ice_Volume",
+                           "NAO_Winter", 
+                           "Salinity", 
+                           "Stratification", 
+                           "Bottom_Temp", 
+                           "Bottom_Temp_Shelf",
+                           "SST")
 
+short.pressures2 <- dplyr::select(pressures, "YEAR", "ID", "MAFA1", "MAFA2",
+                           "DFA1", "DFA2", "DFA3",
+                            "Nitrate_0_50",
+                           "Silicate_0_50",
+                           "Phosphate_0_50",
+                           "Nitrate_50_150",
+                           "Silicate_50_150",
+                           "Phosphate_50_150",
+                           "Chlorophyll_100m",
+                           "C_finmarchicus",
+                           "Pseudocalanus",
+                           "Copepods",
+                           "Non_copepods",
+                           "Zooplankton_Biomass",
+                           "Diatoms",
+                           "Dinoflagellates",
+                           "Ciliates",
+                           "Flagellates",
+                           "Larvacea",
+                           "Euphausiacea",
+                           "Gastropoda",
+                           "Chaetognatha",
+                           "Polychaeta",
+                           "Ostracoda",
+                           "Bivalvia",
+                           "Echinodermata",
+                           "Cirripedia",
+                           "Amphipoda",
+                           "Arctic_Calanus",
+                           "Warm_Offshore",
+                           "Warm_Shelf",
+                           "Bloom_Start",
+                           "Bloom_Duration",
+                           "Bloom_Amplitude",
+                           "Bloom_Magnitude")
 #pressure.names <- names(pressures)[3:length(names(pressures))]
 
 #responses
@@ -195,12 +269,13 @@ wss.short.responses<-short.responses %>%
   dplyr::select(-YEAR, -ID)%>%
   as_tibble()
 
-wss.short.pressures<-short.pressures %>% 
+wss.short.pressures<-short.pressures2 %>%
   dplyr::filter(ID=="WSS", YEAR >=1999) %>%
   dplyr::select(-YEAR, -ID) %>%
   as_tibble()
 
-wss.short.year<-short.pressures %>%
+
+wss.short.year<-short.pressures2 %>%
   dplyr::filter(ID=="WSS", YEAR>=1999) %>%
   dplyr::select(YEAR)
 
@@ -220,20 +295,23 @@ wss.short.data_init<-ind_init(ind_tbl=wss.short.responses, press_tbl=wss.short.p
 
 wss.short.m_gam<-model_gam(init_tbl=wss.short.data_init)
 
-p.wss.short<-plot_model(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
+# p.wss.short<-plot_model(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
 
 wss.short.m_gamm<-model_gamm(init_tbl=wss.short.data_init, filter=wss.short.m_gam$tac, excl_outlier=NULL)
 
 wss.short.best_gamm<-select_model(gam_tbl=wss.short.m_gam, gamm_tbl=wss.short.m_gamm)
 
+#save(wss.short.m_gam, file="wss.short.m_gam.RData")
 #derivatives
-wss.short.calc<-calc_deriv(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
+wss.short.calc<-calc_deriv(init_tbl=wss.short.data_init, mod_tbl=wss.short.best_gamm)
 
 #pressure indicators
 
 wss.short.it<-select_interaction(mod_tbl=wss.short.calc)
 
-wss.short.m_all<-test_interaction(init_tbl=wss.short.data_init, mod_tbl=wss.short.calc, interactions=wss.short.it)
+wss.short.m_all_2<-test_interaction(init_tbl=wss.short.data_init, mod_tbl=wss.short.calc, interactions=wss.short.it)
+
+write_csv(wss.short.m_all_2, "wss.short.m_all_2.csv")
 ```
 
 
@@ -245,12 +323,12 @@ wss.long.responses<-long.responses %>%
   dplyr::select(-YEAR, -ID)%>%
   as_tibble()
 
-wss.long.pressures<-long.pressures %>% 
+wss.long.pressures<-long.pressures2 %>% 
   dplyr::filter(ID=="WSS") %>%
   dplyr::select(-YEAR, -ID) %>%
   as_tibble()
 
-wss.long.year<-long.pressures %>%
+wss.long.year<-long.pressures2 %>%
   dplyr::filter(ID=="WSS") %>%
   dplyr::select(YEAR)
 
@@ -267,19 +345,28 @@ wss.long.data_init<-ind_init(ind_tbl=wss.long.responses, press_tbl=wss.long.pres
 #GAM and GAMMs
 wss.long.m_gam<-model_gam(init_tbl=wss.long.data_init)
 
-p.wss.long<-plot_model(init_tbl=wss.long.data_init, mod_tbl=wss.long.m_gam)
+# p.wss.long<-plot_model(init_tbl=wss.long.data_init, mod_tbl=wss.long.m_gam)
 
 wss.long.m_gamm<-model_gamm(init_tbl=wss.long.data_init, filter=wss.long.m_gam$tac, excl_outlier=NULL)
 
 wss.long.best_gamm<-select_model(gam_tbl=wss.long.m_gam, gamm_tbl=wss.long.m_gamm)
 
+save(wss.long.ts.trend, file="wss.long.ts.trend2.RData")
+save(wss.long.m_gam, file="wss.long.m_gam2.RData")
+save(wss.long.m_gamm, file="wss.long.m_gamm2.RData")
+save(wss.long.best_gamm, file="wss.short.best_gamm2.RData")
+
 #Derivatives of wss.long
-wss.long.calc<-calc_deriv(init_tbl=wss.long.data_init, mod_tbl=wss.long.m_gam)
+wss.long.calc<-calc_deriv(init_tbl=wss.long.data_init, mod_tbl=wss.long.best_gamm)
 
 #pressure indicators wss.long
 wss.long.it<-select_interaction(mod_tbl=wss.long.calc)
 
-wss.long.m_all<-test_interaction(init_tbl=wss.long.data_init, mod_tbl=wss.long.calc, interactions=wss.long.it)
+wss.long.m_all2<-test_interaction(init_tbl=wss.long.data_init, mod_tbl=wss.long.calc, interactions=wss.long.it)
+
+write_csv(wss.long.m_all2, "wss.long.m_all2.csv")
+save(wss.long.m_all2, file="wss.long.m_all2.RData")
+save(wss.long.m_all1, file="wss.long.m_all1.RData")
 
 ```
 
@@ -309,9 +396,9 @@ ess.long.year<-dplyr::pull(ess.long.year, YEAR)
 
 
 ess.long.ts.trend<-model_trend(ind_tbl=ess.long.responses, time=ess.long.year)
-ess.long.ts.trend.pd<-plot_diagnostics(ess.long.ts.trend$model)
-
-ess.long.ts.trend<-model_trend(ind_tbl=ess.long.responses, time=ess.long.year)
+# ess.long.ts.trend.pd<-plot_diagnostics(ess.long.ts.trend$model)
+# 
+# ess.long.ts.trend<-model_trend(ind_tbl=ess.long.responses, time=ess.long.year)
 ###ess.long.ts.trend.pd<-plot_diagnostics(ess.long.ts.trend$model)
 
 
@@ -321,11 +408,17 @@ ess.long.data_init<-ind_init(ind_tbl=ess.long.responses, press_tbl=ess.long.pres
 #GAM and GAMMs
 ess.long.m_gam<-model_gam(init_tbl=ess.long.data_init)
 
-p.ess.long<-plot_model(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
+# p.ess.long<-plot_model(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
 
 ess.long.m_gamm<-model_gamm(init_tbl=ess.long.data_init, filter=ess.long.m_gam$tac, excl_outlier=NULL)
 
 ess.long.best_gamm<-select_model(gam_tbl=ess.long.m_gam, gamm_tbl=ess.long.m_gamm)
+
+
+save(ess.long.ts.trend, file="ess.long.ts.trend2.RData")
+save(ess.long.m_gam, file="ess.long.m_gam2.RData")
+save(ess.long.m_gamm, file="ess.long.m_gamm2.RData")
+save(ess.long.best_gamm, file="ess.short.best_gamm2.RData")
 
 #Derivatives of ess.long
 ess.long.calc<-calc_deriv(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
@@ -335,7 +428,8 @@ ess.long.it<-select_interaction(mod_tbl=ess.long.calc)
 
 ess.long.m_all<-test_interaction(init_tbl=ess.long.data_init, mod_tbl=ess.long.calc, interactions=ess.long.it)
 
-
+write_csv(ess.long.m_all, "ess.long.m_all.csv")
+save(ess.long.m_all, file="ess.long.m_all.RData")
 ```
 
 
@@ -345,13 +439,13 @@ ess.short.responses<-short.responses %>%
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(-YEAR, -ID)
 
-ess.short.pressures<-short.pressures %>% 
+ess.short.pressures<-short.pressures2 %>% 
     dplyr::slice(-98) %>%
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(-YEAR, -ID)
 
 
-ess.short.year<-short.pressures %>%
+ess.short.year<-short.pressures2 %>%
   dplyr::slice(-98) %>%  
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(YEAR)
@@ -362,8 +456,8 @@ ess.short.year<-dplyr::pull(ess.short.year, YEAR)
 
 
 ess.short.ts.trend<-model_trend(ind_tbl=ess.short.responses, time=ess.short.year)
-ess.short.ts.trend.pd<-plot_diagnostics(ess.short.ts.trend$model)
-ess.short.ts.trend.pt<-plot_diagnostics(ess.short.ts.trend$model)
+# ess.short.ts.trend.pd<-plot_diagnostics(ess.short.ts.trend$model)
+# ess.short.ts.trend.pt<-plot_diagnostics(ess.short.ts.trend$model)
 
 #Data initialization
 ess.short.data_init<-ind_init(ind_tbl=ess.short.responses, press_tbl=ess.short.pressures, time=ess.short.year)
@@ -371,17 +465,24 @@ ess.short.data_init<-ind_init(ind_tbl=ess.short.responses, press_tbl=ess.short.p
 #GAM and GAMMs
 ess.short.m_gam<-model_gam(init_tbl=ess.short.data_init)
 
-p.ess.short<-plot_model(init_tbl=ess.short.data_init, mod_tbl=ess.short.m_gam)
+# p.ess.short<-plot_model(init_tbl=ess.short.data_init, mod_tbl=ess.short.m_gam)
 
 ess.short.m_gamm<-model_gamm(init_tbl=ess.short.data_init, filter=ess.short.m_gam$tac, excl_outlier=NULL)
 
+ess.short.best_gamm<-select_model(gam_tbl=ess.short.m_gam, gamm_tbl=ess.short.m_gamm)
+
+save(ess.short.m_gam, file="ess.short.m_gam2.RData")
+save(ess.short.m_gamm, file="ess.short.m_gamm2.RData")
+save(ess.short.best_gamm, file="ess.short.best_gamm2.RData")
+
 #Derivatives of ess.short
-ess.short.calc<-calc_deriv(init_tbl=ess.short.data_init, mod_tbl=ess.short.m_gam)
+ess.short.calc<-calc_deriv(init_tbl=ess.short.data_init, mod_tbl=ess.short.best_gamm)
 
 #pressure indicators ess.long
 ess.short.it<-select_interaction(mod_tbl=ess.short.calc)
 
-ess.short.m_all<-test_interaction(init_tbl=ess.short.data_init, mod_tbl=ess.short.calc, interactions=ess.short.it)
+ess.short.m_all2<-test_interaction(init_tbl=ess.short.data_init, mod_tbl=ess.short.calc, interactions=ess.short.it)
 
+write_csv(ess.short.m_all2, "ess.short.m_all2.csv")
 ```
 
