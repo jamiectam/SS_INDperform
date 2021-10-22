@@ -254,8 +254,8 @@ short.pressures2 <- dplyr::select(pressures, "YEAR", "ID", "MAFA1", "MAFA2",
                            "Bloom_Duration",
                            "Bloom_Amplitude",
                            "Bloom_Magnitude")
-#pressure.names <- names(pressures)[3:length(names(pressures))]
-
+long.pressure.names <- names(long.pressures)[3:length(names(long.pressures))]
+short.pressure.names <- names(short.pressures)[3:length(names(short.pressures))]
 #responses
 #pressures
 
@@ -269,13 +269,13 @@ wss.short.responses<-short.responses %>%
   dplyr::select(-YEAR, -ID)%>%
   as_tibble()
 
-wss.short.pressures<-short.pressures2 %>%
+wss.short.pressures<-short.pressures %>%
   dplyr::filter(ID=="WSS", YEAR >=1999) %>%
   dplyr::select(-YEAR, -ID) %>%
   as_tibble()
 
 
-wss.short.year<-short.pressures2 %>%
+wss.short.year<-short.pressures %>%
   dplyr::filter(ID=="WSS", YEAR>=1999) %>%
   dplyr::select(YEAR)
 
@@ -294,6 +294,8 @@ wss.short.data_init<-ind_init(ind_tbl=wss.short.responses, press_tbl=wss.short.p
 #GAM and GAMM for wss.short
 
 wss.short.m_gam<-model_gam(init_tbl=wss.short.data_init)
+wss.short.m_glm1<-model_gam(init_tbl=wss.short.data_init, k=1)
+save(wss.short.m_glm1, file="wss.short.m_glm1.RData")
 
 # p.wss.short<-plot_model(init_tbl=wss.short.data_init, mod_tbl=wss.short.m_gam)
 
@@ -310,7 +312,7 @@ wss.short.calc<-calc_deriv(init_tbl=wss.short.data_init, mod_tbl=wss.short.best_
 wss.short.it<-select_interaction(mod_tbl=wss.short.calc)
 
 wss.short.m_all_2<-test_interaction(init_tbl=wss.short.data_init, mod_tbl=wss.short.calc, interactions=wss.short.it)
-
+save(wss.short.m_all1, file="wss.short.m_all1.RData")
 write_csv(wss.short.m_all_2, "wss.short.m_all_2.csv")
 ```
 
@@ -323,12 +325,12 @@ wss.long.responses<-long.responses %>%
   dplyr::select(-YEAR, -ID)%>%
   as_tibble()
 
-wss.long.pressures<-long.pressures2 %>% 
+wss.long.pressures<-long.pressures1 %>% 
   dplyr::filter(ID=="WSS") %>%
   dplyr::select(-YEAR, -ID) %>%
   as_tibble()
 
-wss.long.year<-long.pressures2 %>%
+wss.long.year<-long.pressures1 %>%
   dplyr::filter(ID=="WSS") %>%
   dplyr::select(YEAR)
 
@@ -344,6 +346,8 @@ wss.long.data_init<-ind_init(ind_tbl=wss.long.responses, press_tbl=wss.long.pres
 
 #GAM and GAMMs
 wss.long.m_gam<-model_gam(init_tbl=wss.long.data_init)
+wss.long.m_glm1<-model_gam(init_tbl=wss.long.data_init, k=1)
+save(wss.long.m_glm1, file="wss.long.m_glm1.RData")
 
 # p.wss.long<-plot_model(init_tbl=wss.long.data_init, mod_tbl=wss.long.m_gam)
 
@@ -379,13 +383,13 @@ ess.long.responses<-long.responses %>%
   dplyr::select(-YEAR, -ID)%>%
   as_tibble()
 
-ess.long.pressures<-long.pressures %>% 
+ess.long.pressures<-long.pressures1 %>% 
     dplyr::slice(-98) %>%
   dplyr::filter(ID=="ESS") %>%
   dplyr::select(-YEAR, -ID) %>%
   as_tibble()
 
-ess.long.year<-long.pressures %>%
+ess.long.year<-long.pressures1 %>%
    dplyr::slice(-98) %>%
   dplyr::filter(ID=="ESS") %>%
   dplyr::select(YEAR)
@@ -407,6 +411,7 @@ ess.long.data_init<-ind_init(ind_tbl=ess.long.responses, press_tbl=ess.long.pres
 
 #GAM and GAMMs
 ess.long.m_gam<-model_gam(init_tbl=ess.long.data_init)
+ess.long.m_glm1<-model_gam(init_tbl=ess.long.data_init, k=1)
 
 # p.ess.long<-plot_model(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
 
@@ -426,10 +431,11 @@ ess.long.calc<-calc_deriv(init_tbl=ess.long.data_init, mod_tbl=ess.long.m_gam)
 #pressure indicators ess.long
 ess.long.it<-select_interaction(mod_tbl=ess.long.calc)
 
-ess.long.m_all<-test_interaction(init_tbl=ess.long.data_init, mod_tbl=ess.long.calc, interactions=ess.long.it)
+ess.long.m_all2<-test_interaction(init_tbl=ess.long.data_init, mod_tbl=ess.long.calc, interactions=ess.long.it)
 
-write_csv(ess.long.m_all, "ess.long.m_all.csv")
-save(ess.long.m_all, file="ess.long.m_all.RData")
+write_csv(ess.long.m_all2, "ess.long.m_all2.csv")
+save(ess.long.m_all2, file="ess.long.m_all2.RData")
+save(ess.long.m_glm1, file="ess.long.m_glm1.RData")
 ```
 
 
@@ -439,13 +445,13 @@ ess.short.responses<-short.responses %>%
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(-YEAR, -ID)
 
-ess.short.pressures<-short.pressures2 %>% 
+ess.short.pressures<-short.pressures1 %>% 
     dplyr::slice(-98) %>%
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(-YEAR, -ID)
 
 
-ess.short.year<-short.pressures2 %>%
+ess.short.year<-short.pressures1 %>%
   dplyr::slice(-98) %>%  
   dplyr::filter(ID=="ESS", YEAR>=1999) %>%
   dplyr::select(YEAR)
@@ -464,6 +470,8 @@ ess.short.data_init<-ind_init(ind_tbl=ess.short.responses, press_tbl=ess.short.p
 
 #GAM and GAMMs
 ess.short.m_gam<-model_gam(init_tbl=ess.short.data_init)
+ess.short.m_glm1<-model_gam(init_tbl=ess.short.data_init, k=1)
+save(ess.short.m_glm1, file="ess.short.m_glm1.RData")
 
 # p.ess.short<-plot_model(init_tbl=ess.short.data_init, mod_tbl=ess.short.m_gam)
 
@@ -484,5 +492,1150 @@ ess.short.it<-select_interaction(mod_tbl=ess.short.calc)
 ess.short.m_all2<-test_interaction(init_tbl=ess.short.data_init, mod_tbl=ess.short.calc, interactions=ess.short.it)
 
 write_csv(ess.short.m_all2, "ess.short.m_all2.csv")
+```
+
+##GLMs
+```{r}
+library(meboot)
+library(mgcv)
+library(reshape2)
+
+#set up data for WSS short
+wss.short.responses<-short.responses %>% 
+  dplyr::filter(ID=="WSS", YEAR >=1999) %>%
+  dplyr::select(-YEAR, -ID)%>%
+  as.data.frame()
+
+wss.short.pressures<-short.pressures %>%
+  dplyr::filter(ID=="WSS", YEAR >=1999) %>%
+  dplyr::select(-YEAR, -ID) %>%
+  as.data.frame()
+
+
+wss.short.year<-short.pressures %>%
+  dplyr::filter(ID=="WSS", YEAR>=1999) %>%
+  dplyr::select(YEAR)
+# 
+# wss.short.year$YEAR<-as.numeric(wss.short.year$YEAR)
+# wss.short.year<-dplyr::pull(wss.short.year, YEAR)
+
+dat.full <- cbind(wss.short.responses, wss.short.pressures, wss.short.year)
+#
+resp.name <- colnames(wss.short.responses)
+dri.name <- colnames(wss.short.pressures)
+#
+dat.cut <- dat.full[colnames(dat.full) %in% c("YEAR", resp.name, dri.name)]
+dat.cut <- dat.cut[apply(dat.cut, 1, function(x)!any(is.na(x))),]
+
+myresponse <- dat.cut[[resp.name]]
+mydriver <- dat.cut[[dri.name]]
+ts.length <- dat.cut$YEAR
+
+#####################
+# Fit the GAM model #
+#####################
+sp.len <- 200 # Spline length
+nb <- 1000  # Number of bootstrap replicates
+gam.mat <- matrix(nrow=sp.len, ncol=nb) ## create a matrix to be filled with bootstrapped splines (200 x 1000)
+# dif1 <- 1 # First derivative
+# dif2 <- 2 # Second derivative
+# #
+# GAM #
+# gam1 <- gam(myresponse ~ s(mydriver, bs = "ts"), method = "GCV.Cp", se = T)
+# gam1 uses thin-plate splines and prevents overfitting by using cross validation, run 
+# ?gam() for more info on model. 
+# summary(gam1) will show the summary statistics for the model
+# gam.check(gam1)
+# plot(gam1) will show a plot of the model
+
+# GLM #
+gam1 <- gam(myresponse ~ mydriver, method="GCV.Cp", select=TRUE)
+# gam2 removes the smoothing function s(), so it is basically a linear model. Check out my paper to see the conditions
+# on when to pick a GAM over a GLM... although for your data I imagine that GAM will be best.
+# gam.check(gam2)
+
+# Pull out relevant model outputs:
+summary.gam1 <- as.data.frame(cbind(summary(gam1)$dev.expl,       # deviance explained
+                                    summary(gam1)$edf,            # estimated degrees of freedom
+                                    summary(gam1)$sp.criterion,   # GCV score
+                                    summary(gam1)$s.pv))          # estimated p-value
+colnames(summary.gam1)<-c("dev.expl","edf", "GCV", "p_value")
+
+ind.fit <- list(mydriver = seq(from = min(mydriver), to = max(mydriver), length.out = sp.len))
+pred <- predict.gam(gam1, newdata = ind.fit, type = "response", se.fit = T)
+#
+gam.data <- data.frame(pred$fit,
+                       ind.fit$mydriver)
+colnames(gam.data) <- c("response","driver")
+
+# Bootstrap and subsequent code in a nutshell...
+# 1) take a random sample of the data 1000 times
+# 2) take GAM of each bootstrap replicate (br)
+# 3) Take the 1st and 2nd derivative of each br
+# 4) When 95% of the 1st or 2nd derivative replicates are greater or less than zero, we have a significant
+#    trend (1st derivative), or threshold (2nd derivative).
+#
+# Note on maximum entropy bootstrap:
+# Bootstrapping is a nonparametric alternative for assessing the 
+# uncertainty of a linear trend in the presence
+# of autocorrelation. Maximum entropy bootstrap allows
+# us to construct a set of replicates of the original series
+# to be used for inference while retaining the temporal
+# dependence structure of the original series in the resampling process
+#
+respboot <- meboot(myresponse, reps = nb, trim = 0.1)$ens 
+drivboot <- meboot(mydriver, reps = nb, trim = 0.1)$ens
+#
+gam.mat <- matrix(ncol = nb, nrow = sp.len)
+for(i in 1:nb) {
+  resp.i <- respboot[,i]
+  driv.i <- drivboot[,i]
+  gam.i <- gam(resp.i ~ s(driv.i, bs = "ts"), method = "GCV.Cp", se = T)
+  newdata.i <- list(driv.i = seq(from = min(driv.i), 
+                                 to = max(driv.i),
+                                 length.out = sp.len))
+  gam.mat[,i] <- predict.gam(gam.i, newdata = newdata.i, type = "response", se.fit = T)$fit
+}
+#
+
+
+```
+
+```{r}
+# create pressure for the GAM forumla
+  press <- paste( pressure.names, sep  = "")
+  
+  # forumla for GAM
+  mods <- expand.grid(response.names, press, stringsAsFactors = FALSE)
+  names(mods) <- c("response", "press")
+  mods$formula <- paste(mods$response, mods$press, sep = " ~ ")
+  
+  # initialize list and dataframe to store results
+  #model.results <- list(NULL)
+  model.summary <- data.frame()
+  
+  # loop over each formula in mods
+  for(i in 1:nrow(mods)){
+    
+    gam.i <- gam(as.formula(mods$formula[i]), data = ess.dat, 
+                 method = "REML",
+                 family = family.ess)
+    
+    # store the results for each model
+    #model.results[[i]] <- gam.i
+    
+    # store the summary for each model
+    model.summary.i <- data.frame(as.character(mods$response[i]),
+                                  as.character(mods$smooth[i]),
+                                  signif(summary(gam.i)$s.pv, digits = 2),
+                                  round(summary(gam.i)$edf, digits = 2),
+                                  round(summary(gam.i)$r.sq, digits = 2),
+                                  round(summary(gam.i)$dev.expl, digits = 3))
+    names(model.summary.i) = c("response", "smooth", "p-value", "edf", "r-squared", "deviance explained")
+    
+    model.summary <- rbind(model.summary, model.summary.i)
+  }
+  
+```
+## GLM for wss.short
+
+
+```{r}
+
+wss.short.responses<-short.responses %>% 
+  dplyr::filter(ID=="WSS", YEAR >=1999) %>%
+  dplyr::select(-YEAR, -ID)%>%
+  as_tibble()
+
+wss.short.pressures<-short.pressures %>%
+  dplyr::filter(ID=="WSS", YEAR >=1999) %>%
+  dplyr::select(-YEAR, -ID) %>%
+  as_tibble()
+
+
+wss.short.year<-short.pressures %>%
+  dplyr::filter(ID=="WSS", YEAR>=1999) %>%
+  dplyr::select(YEAR)
+
+dat.full<-cbind(wss.short.responses, wss.short.pressures, wss.short.year)
+
+resp <- c(rep(c("MargalefRichness_ALL", 
+                    "Heips_ALL",
+                    "LargeFishIndicator",
+                    "BIOMASS_PISCIVORE",
+                    "BIOMASS_ZOOPISCIVORE",
+                    "MeanLengthABUNDANCE" ,
+                    "MeanTLCommunity" ,
+                    "CCondition_FINFISH",
+                    "CCondition_MBENTHIVORE",
+                    "CCondition_PISCIVORE",
+                    "CCondition_ZOOPISCIVORE",
+                    "CCondition_LBENTHIVORE",
+                    "MeanLifespan" ,
+                    "IVILandings",
+                    "CVBiomass" ,
+                    "BIOMASS_ALL",
+                    "BIOMASS_GADOIDS" ,
+                    "BIOMASS_FLATFISH",
+                    "BIOMASS_SKATES", 
+                    "BIOMASS_INVERTEBRATES", 
+                    "INVERTEBRATES_GROUNDFISH", 
+                    "BIOMASS_TL2"), 59))
+
+dri <- c(rep(c( "MAFA1", "MAFA2",
+                           "DFA1", "DFA2", "DFA3",
+                           "Diversity_Target_Spp",
+                           "MeanTL_Landings" ,
+                           "MTI",
+                           "Fishing_Pressure" ,
+                           "FP_Clupeids" ,
+                           "Skates_Landings" ,
+                           "Flatfish_Landings" ,
+                           "Large_Pelagic_Landings"  ,
+                           "Total_Landings" ,
+                           "Air_Temperature",
+                           "AMO", 
+                           "CIL_Volume", 
+                           "Density", 
+                           "Ice_Area", 
+                           "Ice_Volume",
+                           "NAO_Winter", 
+                           "Salinity", 
+                           "Stratification", 
+                           "Bottom_Temp", 
+                           "Bottom_Temp_Shelf",
+                           "SST", 
+                           "Nitrate_0_50", 
+                           "Silicate_0_50", 
+                           "Phosphate_0_50",
+                           "Nitrate_50_150", 
+                           "Silicate_50_150", 
+                           "Phosphate_50_150",
+                           "Chlorophyll_100m", 
+                           "C_finmarchicus", 
+                           "Pseudocalanus", 
+                           "Copepods", 
+                           "Non_copepods", 
+                           "Zooplankton_Biomass", 
+                           "Diatoms", 
+                           "Dinoflagellates",
+                           "Ciliates", 
+                           "Flagellates", 
+                           "Larvacea", 
+                           "Euphausiacea", 
+                           "Gastropoda",
+                           "Chaetognatha",
+                           "Polychaeta", 
+                           "Ostracoda", 
+                           "Bivalvia", 
+                           "Echinodermata", 
+                           "Cirripedia", 
+                           "Amphipoda", 
+                           "Arctic_Calanus", 
+                           "Warm_Offshore", 
+                           "Warm_Shelf", 
+                           "Bloom_Start",
+                           "Bloom_Duration", 
+                           "Bloom_Amplitude", 
+                           "Bloom_Magnitude"), 22))
+         
+
+#
+# gamFunc <- function(RESPONSE, DRIVER) {
+#resp.name <- "California_sea_lion_pup_production" 
+#dri.name <- "Nutrients"
+
+# for(resp.name in resp) {
+#   for(dri.name in dri) {
+#     cat(paste0(resp.name, " ", dri.name, "\n"))
+#     gamFunction(resp.name = resp.name, dri.name = dri.name)
+#   }
+# }
+allSummary <- data.frame()
+#
+# gamFunction(resp.name = resp.name, dri.name = dri.name)
+
+# gamFunction <- function(resp.name, dri.name) 
+for (imod in 1:length(resp))
+  {
+  #imod=1
+#for(resp.name in resp) {
+  #for(dri.name in dri) {
+   resp.name <- resp[imod]
+   dri.name <- dri[imod]
+  
+    dat.cut <- dat.full[colnames(dat.full) %in% c("YEAR", resp.name, dri.name)]
+    dat.cut <- dat.cut[apply(dat.cut, 1, function(x)!any(is.na(x))),]
+    #
+    myresponse <- dat.cut[[resp.name]]
+    mydriver <- dat.cut[[dri.name]]
+    ts.length <- dat.cut$year
+    #
+    #####################
+    # Fit the GAM model #
+    #####################
+    sp.len <- 200 # Spline length
+    nb <- 1000  # Number of bootstrap replicates
+    gam.mat <- matrix(nrow=sp.len, ncol=nb) ## create a matrix to be filled with bootstrapped splines (200 x 1000)
+    dif1 <- 1 # First derivative
+    dif2 <- 2 # Second derivative
+    ks <- 4
+    # ks <- ifelse(dri.name == "Nutrients", 3, 4)
+    #
+    # GAM #
+#    gam1 <- gam(myresponse ~ s(mydriver, bs = "tp", k = ks), method = "GCV.Cp", se = T)
+#    gam1 <- gam(myresponse ~ s(mydriver, k = ks), method = "ML", se = T)
+#    gamm1 <- gamm(myresponse ~ s(mydriver, bs = "tp", k = ks), 
+#           se = T,correlation=corAR1(form=~ts.length))
+   # gamm(myresponse ~ s(mydriver, bs= "tp",k = ks), optimMmethod="GCV.Cp",
+            # se = T,correlation=corAR1(form=~ts.length)))
+    #myresponse <- c(myresponse,0.23,0.21)
+    #mydriver <- c(mydriver,26500000,26400000)
+    #myresponse <- c(myresponse,myresponse)
+    #mydriver <- c(mydriver,mydriver)
+    
+
+    try(gam1 <- glm(myresponse ~ mydriver))
+    if (length(gam1)==0)
+      {
+       print(imod)
+       gam1 <- gam(myresponse~mydriver, method="GCV.Cp", se=T)
+      }
+
+    # gam1 uses thin-plate splines and prevents overfitting by using cross validation, run 
+    # ?gam() for more info on model. 
+    # summary(gam1) will show the summary statistics for the model
+    # gam.check(gam1)
+    # plot(gam1) will show a plot of the model
+    
+    # GLM #
+    #gam2 <- gam(myresponse ~ mydriver, method = "GCV.Cp", se = T)
+    #gam2 <- gamm(myresponse ~ s(mydriver,k=1), method = "ML", se = T,correlation=corAR1())
+    #gam2 <- gls(myresponse ~ mydriver, method = "ML", correlation=corAR1())
+
+# gam2 removes the smoothing function s(), so it is basically a linear model. Check out my paper to see the conditions
+    # on when to pick a GAM over a GLM... although for your data I imagine that GAM will be best.
+    # gam.check(gam2)
+    r2glm <- function(gam1) {
+
+  summaryLog <- summary(gam1)
+  1 - summaryLog$deviance / summaryLog$null.deviance
+
+}
+    # # Pull out relevant model outputs:
+    summary.gam1 <- as.data.frame(cbind("GLM",                        # Model name
+                                        resp.name,                    # Response variable
+                                        dri.name,                     # Pressure variable
+                                        # AIC(gam1$gam),                   # AICc
+                                        gam1$aic,
+                                        summary(gam1)$deviance,
+                                        r2glm(gam1),
+                                        # deviance explained
+                                        # gam1$edf,            # estimated degrees of freedom
+                                        # summary(gam1)$sp.criterion,   # GCV score
+                                        coef(summary(gam1))[2,4]))       # p-value
+    #
+#    summary.gam2 <- as.data.frame(cbind("LM",                         # Model name
+#                                        resp.name,                    # Response variable 
+#                                        dri.name,                     # Pressure variable
+#                                        AICc(gam2),                   # AICc
+#                                        summary(gam2)$dev.expl,       # deviance explained
+#                                        NA,                           # estimated degrees of freedom
+#                                        summary(gam2)$sp.criterion,   # GCV score
+#                                        NA))  #GCV score              # p-value
+    
+# colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+#colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "logLik", "edf", "Pvalue")
+#colnames(summary.gam2)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+colnames(summary.gam1)<-c("model_type", "ind", "press", "glm_AICc", "glm_dev.expl","glm_rsq", "glm_Pvalue")
+    
+    allSummary <- rbind(allSummary, summary.gam1) #, summary.gam2)
+  #} # resp.name loop
+#} # dri.name loop
+
+} ##imod loop (relevant combinations of driver/responses)
+
+#allSummary[,c(4:8)] <- apply(allSummary[,c(4:8)], 2, function(x) as.numeric(as.character(x)))
+bestList <- allSummary  #[!is.na(allSummary$edf) &
+                        # allSummary$edf > 1 &
+                        # allSummary$Pvalue < 0.05,]
+write.table(allSummary,file='wss.short.glm_summary',row.names=FALSE)
+write.csv(allSummary,'wss.short.glm_summary.csv',row.names=F)
+```
+
+#GLM ess.short
+```{r}
+
+ess.short.responses<-short.responses %>% 
+  dplyr::filter(ID=="ESS", YEAR>=1999) %>%
+  dplyr::select(-YEAR, -ID)
+
+ess.short.pressures<-short.pressures %>% 
+    dplyr::slice(-98) %>%
+  dplyr::filter(ID=="ESS", YEAR>=1999) %>%
+  dplyr::select(-YEAR, -ID)
+
+
+ess.short.year<-short.pressures %>%
+  dplyr::slice(-98) %>%  
+  dplyr::filter(ID=="ESS", YEAR>=1999) %>%
+  dplyr::select(YEAR)
+
+dat.full<-cbind(ess.short.responses, ess.short.pressures, ess.short.year)
+
+resp <- c(rep(c("MargalefRichness_ALL", 
+                    "Heips_ALL",
+                    "LargeFishIndicator",
+                    "BIOMASS_PISCIVORE",
+                    "BIOMASS_ZOOPISCIVORE",
+                    "MeanLengthABUNDANCE" ,
+                    "MeanTLCommunity" ,
+                    "CCondition_FINFISH",
+                    "CCondition_MBENTHIVORE",
+                    "CCondition_PISCIVORE",
+                    "CCondition_ZOOPISCIVORE",
+                    "CCondition_LBENTHIVORE",
+                    "MeanLifespan" ,
+                    "IVILandings",
+                    "CVBiomass" ,
+                    "BIOMASS_ALL",
+                    "BIOMASS_GADOIDS" ,
+                    "BIOMASS_FLATFISH",
+                    "BIOMASS_SKATES", 
+                    "BIOMASS_INVERTEBRATES", 
+                    "INVERTEBRATES_GROUNDFISH", 
+                    "BIOMASS_TL2"), 59))
+
+dri <- c(rep(c( "MAFA1", "MAFA2",
+                           "DFA1", "DFA2", "DFA3",
+                           "Diversity_Target_Spp" ,
+                           "MeanTL_Landings",
+                           "MTI",
+                           "Fishing_Pressure" ,
+                           "FP_Clupeids" ,
+                           "Skates_Landings" ,
+                           "Flatfish_Landings" ,
+                           "Large_Pelagic_Landings" ,
+                           "Total_Landings" ,
+                           "Air_Temperature",
+                           "AMO", 
+                           "CIL_Volume", 
+                           "Density", 
+                           "Ice_Area", 
+                           "Ice_Volume",
+                           "NAO_Winter", 
+                           "Salinity", 
+                           "Stratification", 
+                           "Bottom_Temp", 
+                           "Bottom_Temp_Shelf",
+                           "SST", 
+                           "Nitrate_0_50", 
+                           "Silicate_0_50", 
+                           "Phosphate_0_50",
+                           "Nitrate_50_150", 
+                           "Silicate_50_150", 
+                           "Phosphate_50_150",
+                           "Chlorophyll_100m", 
+                           "C_finmarchicus", 
+                           "Pseudocalanus", 
+                           "Copepods", 
+                           "Non_copepods", 
+                           "Zooplankton_Biomass", 
+                           "Diatoms", 
+                           "Dinoflagellates",
+                           "Ciliates", 
+                           "Flagellates", 
+                           "Larvacea", 
+                           "Euphausiacea", 
+                           "Gastropoda",
+                           "Chaetognatha",
+                           "Polychaeta", 
+                           "Ostracoda", 
+                           "Bivalvia", 
+                           "Echinodermata", 
+                           "Cirripedia", 
+                           "Amphipoda", 
+                           "Arctic_Calanus", 
+                           "Warm_Offshore", 
+                           "Warm_Shelf", 
+                           "Bloom_Start",
+                           "Bloom_Duration", 
+                           "Bloom_Amplitude", 
+                           "Bloom_Magnitude"), 22))
+         
+
+#
+# gamFunc <- function(RESPONSE, DRIVER) {
+#resp.name <- "California_sea_lion_pup_production" 
+#dri.name <- "Nutrients"
+
+# for(resp.name in resp) {
+#   for(dri.name in dri) {
+#     cat(paste0(resp.name, " ", dri.name, "\n"))
+#     gamFunction(resp.name = resp.name, dri.name = dri.name)
+#   }
+# }
+allSummary <- data.frame()
+#
+# gamFunction(resp.name = resp.name, dri.name = dri.name)
+
+# gamFunction <- function(resp.name, dri.name) 
+for (imod in 1:length(resp))
+  {
+  #imod=1
+#for(resp.name in resp) {
+  #for(dri.name in dri) {
+   resp.name <- resp[imod]
+   dri.name <- dri[imod]
+  
+    dat.cut <- dat.full[colnames(dat.full) %in% c("YEAR", resp.name, dri.name)]
+    dat.cut <- dat.cut[apply(dat.cut, 1, function(x)!any(is.na(x))),]
+    #
+    myresponse <- dat.cut[[resp.name]]
+    mydriver <- dat.cut[[dri.name]]
+    ts.length <- dat.cut$year
+    #
+    #####################
+    # Fit the GAM model #
+    #####################
+    sp.len <- 200 # Spline length
+    nb <- 1000  # Number of bootstrap replicates
+    gam.mat <- matrix(nrow=sp.len, ncol=nb) ## create a matrix to be filled with bootstrapped splines (200 x 1000)
+    dif1 <- 1 # First derivative
+    dif2 <- 2 # Second derivative
+    ks <- 4
+    # ks <- ifelse(dri.name == "Nutrients", 3, 4)
+    #
+    # GAM #
+#    gam1 <- gam(myresponse ~ s(mydriver, bs = "tp", k = ks), method = "GCV.Cp", se = T)
+#    gam1 <- gam(myresponse ~ s(mydriver, k = ks), method = "ML", se = T)
+#    gamm1 <- gamm(myresponse ~ s(mydriver, bs = "tp", k = ks), 
+#           se = T,correlation=corAR1(form=~ts.length))
+   # gamm(myresponse ~ s(mydriver, bs= "tp",k = ks), optimMmethod="GCV.Cp",
+            # se = T,correlation=corAR1(form=~ts.length)))
+    #myresponse <- c(myresponse,0.23,0.21)
+    #mydriver <- c(mydriver,26500000,26400000)
+    #myresponse <- c(myresponse,myresponse)
+    #mydriver <- c(mydriver,mydriver)
+    
+
+    try(gam1 <- glm(myresponse ~ mydriver))
+    if (length(gam1)==0)
+      {
+       print(imod)
+       gam1 <- gam(myresponse~mydriver, method="GCV.Cp", se=T)
+      }
+
+    # gam1 uses thin-plate splines and prevents overfitting by using cross validation, run 
+    # ?gam() for more info on model. 
+    # summary(gam1) will show the summary statistics for the model
+    # gam.check(gam1)
+    # plot(gam1) will show a plot of the model
+    
+    # GLM #
+    #gam2 <- gam(myresponse ~ mydriver, method = "GCV.Cp", se = T)
+    #gam2 <- gamm(myresponse ~ s(mydriver,k=1), method = "ML", se = T,correlation=corAR1())
+    #gam2 <- gls(myresponse ~ mydriver, method = "ML", correlation=corAR1())
+
+# gam2 removes the smoothing function s(), so it is basically a linear model. Check out my paper to see the conditions
+    # on when to pick a GAM over a GLM... although for your data I imagine that GAM will be best.
+    # gam.check(gam2)
+    r2glm <- function(gam1) {
+
+  summaryLog <- summary(gam1)
+  1 - summaryLog$deviance / summaryLog$null.deviance
+
+}
+    # # Pull out relevant model outputs:
+    summary.gam1 <- as.data.frame(cbind("GLM",                        # Model name
+                                        resp.name,                    # Response variable
+                                        dri.name,                     # Pressure variable
+                                        # AIC(gam1$gam),                   # AICc
+                                        gam1$aic,
+                                        summary(gam1)$deviance,
+                                        r2glm(gam1),
+                                        # deviance explained
+                                        # gam1$edf,            # estimated degrees of freedom
+                                        # summary(gam1)$sp.criterion,   # GCV score
+                                        coef(summary(gam1))[2,4]))       # p-value
+    #
+#    summary.gam2 <- as.data.frame(cbind("LM",                         # Model name
+#                                        resp.name,                    # Response variable 
+#                                        dri.name,                     # Pressure variable
+#                                        AICc(gam2),                   # AICc
+#                                        summary(gam2)$dev.expl,       # deviance explained
+#                                        NA,                           # estimated degrees of freedom
+#                                        summary(gam2)$sp.criterion,   # GCV score
+#                                        NA))  #GCV score              # p-value
+    
+# colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+#colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "logLik", "edf", "Pvalue")
+#colnames(summary.gam2)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+colnames(summary.gam1)<-c("model_type", "ind", "press", "glm_AICc", "glm_dev.expl","glm_rsq", "glm_Pvalue")
+    
+    allSummary <- rbind(allSummary, summary.gam1) #, summary.gam2)
+  #} # resp.name loop
+#} # dri.name loop
+
+} ##imod loop (relevant combinations of driver/responses)
+
+#allSummary[,c(4:8)] <- apply(allSummary[,c(4:8)], 2, function(x) as.numeric(as.character(x)))
+bestList <- allSummary  #[!is.na(allSummary$edf) &
+                        # allSummary$edf > 1 &
+                        # allSummary$Pvalue < 0.05,]
+write.table(allSummary,file='ess.short.glm_summary',row.names=FALSE)
+write.csv(allSummary,'ess.short.glm_summary.csv',row.names=F)
+
+```
+
+#GLM ess.long
+```{r}
+
+ess.long.responses<-long.responses %>% 
+  dplyr::filter(ID=="ESS") %>%
+  dplyr::select(-YEAR, -ID)%>%
+  as_tibble()
+
+ess.long.pressures<-long.pressures %>% 
+    dplyr::slice(-98) %>%
+  dplyr::filter(ID=="ESS") %>%
+  dplyr::select(-YEAR, -ID) %>%
+  as_tibble()
+
+ess.long.year<-long.pressures %>%
+   dplyr::slice(-98) %>%
+  dplyr::filter(ID=="ESS") %>%
+  dplyr::select(YEAR)
+
+
+dat.full<-cbind(ess.long.responses, ess.long.pressures, ess.long.year)
+
+resp <- c(rep(c("MargalefRichness_ALL", 
+                    "Heips_ALL",
+                    "LargeFishIndicator",
+                    "BIOMASS_PISCIVORE",
+                    "BIOMASS_ZOOPISCIVORE",
+                    "MeanLengthABUNDANCE" ,
+                    "MeanTLCommunity" ,
+                    "CCondition_FINFISH",
+                    "CCondition_MBENTHIVORE",
+                    "CCondition_PISCIVORE",
+                    "CCondition_ZOOPISCIVORE",
+                    "CCondition_LBENTHIVORE",
+                    "MeanLifespan" ,
+                    "IVILandings",
+                    "CVBiomass" ,
+                    "BIOMASS_ALL",
+                    "BIOMASS_GADOIDS" ,
+                    "BIOMASS_FLATFISH",
+                    "BIOMASS_SKATES"), 22))
+
+dri <- c(rep(c ( "MAFA1", "MAFA2", 
+                           "Diversity_Target_Spp",
+                           "MeanTL_Landings" ,
+                           "MTI",
+                           "Fishing_Pressure" ,
+                           "FP_Clupeids" ,
+                           "Skates_Landings" ,
+                           "Flatfish_Landings" ,
+                           "Large_Pelagic_Landings"  ,
+                           "Total_Landings" ,
+                           "Air_Temperature", "AMO", "CIL_Volume", "Density", "Ice_Area", "Ice_Volume",
+                           "NAO_Winter", "Salinity", "Stratification", "Bottom_Temp", "Bottom_Temp_Shelf"), 19))
+         
+
+#
+# gamFunc <- function(RESPONSE, DRIVER) {
+#resp.name <- "California_sea_lion_pup_production" 
+#dri.name <- "Nutrients"
+
+# for(resp.name in resp) {
+#   for(dri.name in dri) {
+#     cat(paste0(resp.name, " ", dri.name, "\n"))
+#     gamFunction(resp.name = resp.name, dri.name = dri.name)
+#   }
+# }
+allSummary <- data.frame()
+#
+# gamFunction(resp.name = resp.name, dri.name = dri.name)
+
+# gamFunction <- function(resp.name, dri.name) 
+for (imod in 1:length(resp))
+  {
+  #imod=1
+#for(resp.name in resp) {
+  #for(dri.name in dri) {
+   resp.name <- resp[imod]
+   dri.name <- dri[imod]
+  
+    dat.cut <- dat.full[colnames(dat.full) %in% c("YEAR", resp.name, dri.name)]
+    dat.cut <- dat.cut[apply(dat.cut, 1, function(x)!any(is.na(x))),]
+    #
+    myresponse <- dat.cut[[resp.name]]
+    mydriver <- dat.cut[[dri.name]]
+    ts.length <- dat.cut$year
+    #
+    #####################
+    # Fit the GAM model #
+    #####################
+    sp.len <- 200 # Spline length
+    nb <- 1000  # Number of bootstrap replicates
+    gam.mat <- matrix(nrow=sp.len, ncol=nb) ## create a matrix to be filled with bootstrapped splines (200 x 1000)
+    dif1 <- 1 # First derivative
+    dif2 <- 2 # Second derivative
+    ks <- 4
+    # ks <- ifelse(dri.name == "Nutrients", 3, 4)
+    #
+    # GAM #
+#    gam1 <- gam(myresponse ~ s(mydriver, bs = "tp", k = ks), method = "GCV.Cp", se = T)
+#    gam1 <- gam(myresponse ~ s(mydriver, k = ks), method = "ML", se = T)
+#    gamm1 <- gamm(myresponse ~ s(mydriver, bs = "tp", k = ks), 
+#           se = T,correlation=corAR1(form=~ts.length))
+   # gamm(myresponse ~ s(mydriver, bs= "tp",k = ks), optimMmethod="GCV.Cp",
+            # se = T,correlation=corAR1(form=~ts.length)))
+    #myresponse <- c(myresponse,0.23,0.21)
+    #mydriver <- c(mydriver,26500000,26400000)
+    #myresponse <- c(myresponse,myresponse)
+    #mydriver <- c(mydriver,mydriver)
+    
+
+    try(gam1 <- glm(myresponse ~ mydriver))
+    if (length(gam1)==0)
+      {
+       print(imod)
+       gam1 <- gam(myresponse~mydriver, method="GCV.Cp", se=T)
+      }
+
+    # gam1 uses thin-plate splines and prevents overfitting by using cross validation, run 
+    # ?gam() for more info on model. 
+    # summary(gam1) will show the summary statistics for the model
+    # gam.check(gam1)
+    # plot(gam1) will show a plot of the model
+    
+    # GLM #
+    #gam2 <- gam(myresponse ~ mydriver, method = "GCV.Cp", se = T)
+    #gam2 <- gamm(myresponse ~ s(mydriver,k=1), method = "ML", se = T,correlation=corAR1())
+    #gam2 <- gls(myresponse ~ mydriver, method = "ML", correlation=corAR1())
+
+# gam2 removes the smoothing function s(), so it is basically a linear model. Check out my paper to see the conditions
+    # on when to pick a GAM over a GLM... although for your data I imagine that GAM will be best.
+    # gam.check(gam2)
+    r2glm <- function(gam1) {
+
+  summaryLog <- summary(gam1)
+  1 - summaryLog$deviance / summaryLog$null.deviance
+
+}
+    # # Pull out relevant model outputs:
+    summary.gam1 <- as.data.frame(cbind("GLM",                        # Model name
+                                        resp.name,                    # Response variable
+                                        dri.name,                     # Pressure variable
+                                        # AIC(gam1$gam),                   # AICc
+                                        gam1$aic,
+                                        summary(gam1)$deviance,
+                                        r2glm(gam1),
+                                        # deviance explained
+                                        # gam1$edf,            # estimated degrees of freedom
+                                        # summary(gam1)$sp.criterion,   # GCV score
+                                        coef(summary(gam1))[2,4]))       # p-value
+    #
+#    summary.gam2 <- as.data.frame(cbind("LM",                         # Model name
+#                                        resp.name,                    # Response variable 
+#                                        dri.name,                     # Pressure variable
+#                                        AICc(gam2),                   # AICc
+#                                        summary(gam2)$dev.expl,       # deviance explained
+#                                        NA,                           # estimated degrees of freedom
+#                                        summary(gam2)$sp.criterion,   # GCV score
+#                                        NA))  #GCV score              # p-value
+    
+# colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+#colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "logLik", "edf", "Pvalue")
+#colnames(summary.gam2)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+colnames(summary.gam1)<-c("model_type", "ind", "press", "glm_AICc", "glm_dev.expl","glm_rsq", "glm_Pvalue")
+    
+    allSummary <- rbind(allSummary, summary.gam1) #, summary.gam2)
+  #} # resp.name loop
+#} # dri.name loop
+
+} ##imod loop (relevant combinations of driver/responses)
+
+#allSummary[,c(4:8)] <- apply(allSummary[,c(4:8)], 2, function(x) as.numeric(as.character(x)))
+bestList <- allSummary  #[!is.na(allSummary$edf) &
+                        # allSummary$edf > 1 &
+                        # allSummary$Pvalue < 0.05,]
+write.table(allSummary,file='ess.long.glm_summary',row.names=FALSE)
+write.csv(allSummary,'ess.long.glm_summary.csv',row.names=F)
+
+```
+
+#GLM wss.long
+```{r}
+
+#set up data for WSS long
+wss.long.responses<-long.responses %>% 
+  dplyr::filter(ID=="WSS") %>%
+  dplyr::select(-YEAR, -ID)%>%
+  as_tibble()
+wss.long.pressures<-long.pressures %>% 
+  dplyr::filter(ID=="WSS") %>%
+  dplyr::select(-YEAR, -ID) %>%
+  as_tibble()
+
+wss.long.year<-long.pressures %>%
+  dplyr::filter(ID=="WSS") %>%
+  dplyr::select(YEAR)
+
+
+dat.full<-cbind(wss.long.responses, wss.long.pressures, wss.long.year)
+
+resp <- c(rep(c("MargalefRichness_ALL", 
+                    "Heips_ALL",
+                    "LargeFishIndicator",
+                    "BIOMASS_PISCIVORE",
+                    "BIOMASS_ZOOPISCIVORE",
+                    "MeanLengthABUNDANCE" ,
+                    "MeanTLCommunity" ,
+                    "CCondition_FINFISH",
+                    "CCondition_MBENTHIVORE",
+                    "CCondition_PISCIVORE",
+                    "CCondition_ZOOPISCIVORE",
+                    "CCondition_LBENTHIVORE",
+                    "MeanLifespan" ,
+                    "IVILandings",
+                    "CVBiomass" ,
+                    "BIOMASS_ALL",
+                    "BIOMASS_GADOIDS" ,
+                    "BIOMASS_FLATFISH",
+                    "BIOMASS_SKATES"), 22))
+
+dri <- c(rep(c ( "MAFA1", "MAFA2", 
+                           "Diversity_Target_Spp" ,
+                           "MeanTL_Landings",
+                           "MTI",
+                           "Fishing_Pressure" ,
+                           "FP_Clupeids" ,
+                           "Skates_Landings" ,
+                           "Flatfish_Landings" ,
+                           "Large_Pelagic_Landings"  ,
+                           "Total_Landings" ,
+                           "Air_Temperature", "AMO", "CIL_Volume", "Density", "Ice_Area", "Ice_Volume",
+                           "NAO_Winter", "Salinity", "Stratification", "Bottom_Temp", "Bottom_Temp_Shelf"), 19))
+         
+
+#
+# gamFunc <- function(RESPONSE, DRIVER) {
+#resp.name <- "California_sea_lion_pup_production" 
+#dri.name <- "Nutrients"
+
+# for(resp.name in resp) {
+#   for(dri.name in dri) {
+#     cat(paste0(resp.name, " ", dri.name, "\n"))
+#     gamFunction(resp.name = resp.name, dri.name = dri.name)
+#   }
+# }
+allSummary <- data.frame()
+#
+# gamFunction(resp.name = resp.name, dri.name = dri.name)
+
+# gamFunction <- function(resp.name, dri.name) 
+for (imod in 1:length(resp))
+  {
+  #imod=1
+#for(resp.name in resp) {
+  #for(dri.name in dri) {
+   resp.name <- resp[imod]
+   dri.name <- dri[imod]
+  
+    dat.cut <- dat.full[colnames(dat.full) %in% c("YEAR", resp.name, dri.name)]
+    dat.cut <- dat.cut[apply(dat.cut, 1, function(x)!any(is.na(x))),]
+    #
+    myresponse <- dat.cut[[resp.name]]
+    mydriver <- dat.cut[[dri.name]]
+    ts.length <- dat.cut$year
+    #
+    #####################
+    # Fit the GAM model #
+    #####################
+    sp.len <- 200 # Spline length
+    nb <- 1000  # Number of bootstrap replicates
+    gam.mat <- matrix(nrow=sp.len, ncol=nb) ## create a matrix to be filled with bootstrapped splines (200 x 1000)
+    dif1 <- 1 # First derivative
+    dif2 <- 2 # Second derivative
+    ks <- 4
+    # ks <- ifelse(dri.name == "Nutrients", 3, 4)
+    #
+    # GAM #
+#    gam1 <- gam(myresponse ~ s(mydriver, bs = "tp", k = ks), method = "GCV.Cp", se = T)
+#    gam1 <- gam(myresponse ~ s(mydriver, k = ks), method = "ML", se = T)
+#    gamm1 <- gamm(myresponse ~ s(mydriver, bs = "tp", k = ks), 
+#           se = T,correlation=corAR1(form=~ts.length))
+   # gamm(myresponse ~ s(mydriver, bs= "tp",k = ks), optimMmethod="GCV.Cp",
+            # se = T,correlation=corAR1(form=~ts.length)))
+    #myresponse <- c(myresponse,0.23,0.21)
+    #mydriver <- c(mydriver,26500000,26400000)
+    #myresponse <- c(myresponse,myresponse)
+    #mydriver <- c(mydriver,mydriver)
+    
+
+    try(gam1 <- glm(myresponse ~ mydriver))
+    if (length(gam1)==0)
+      {
+       print(imod)
+       gam1 <- gam(myresponse~mydriver, method="GCV.Cp", se=T)
+      }
+
+    # gam1 uses thin-plate splines and prevents overfitting by using cross validation, run 
+    # ?gam() for more info on model. 
+    # summary(gam1) will show the summary statistics for the model
+    # gam.check(gam1)
+    # plot(gam1) will show a plot of the model
+    
+    # GLM #
+    #gam2 <- gam(myresponse ~ mydriver, method = "GCV.Cp", se = T)
+    #gam2 <- gamm(myresponse ~ s(mydriver,k=1), method = "ML", se = T,correlation=corAR1())
+    #gam2 <- gls(myresponse ~ mydriver, method = "ML", correlation=corAR1())
+
+# gam2 removes the smoothing function s(), so it is basically a linear model. Check out my paper to see the conditions
+    # on when to pick a GAM over a GLM... although for your data I imagine that GAM will be best.
+    # gam.check(gam2)
+    
+    r2glm <- function(gam1) {
+
+  summaryLog <- summary(gam1)
+  1 - summaryLog$deviance / summaryLog$null.deviance
+
+}
+    # # Pull out relevant model outputs:
+    summary.gam1 <- as.data.frame(cbind("GLM",                        # Model name
+                                        resp.name,                    # Response variable
+                                        dri.name,                     # Pressure variable
+                                        # AIC(gam1$gam),                   # AICc
+                                        gam1$aic,
+                                        summary(gam1)$deviance,
+                                        r2glm(gam1),
+                                        # deviance explained
+                                        # gam1$edf,            # estimated degrees of freedom
+                                        # summary(gam1)$sp.criterion,   # GCV score
+                                        coef(summary(gam1))[2,4]))       # p-value
+    #
+#    summary.gam2 <- as.data.frame(cbind("LM",                         # Model name
+#                                        resp.name,                    # Response variable 
+#                                        dri.name,                     # Pressure variable
+#                                        AICc(gam2),                   # AICc
+#                                        summary(gam2)$dev.expl,       # deviance explained
+#                                        NA,                           # estimated degrees of freedom
+#                                        summary(gam2)$sp.criterion,   # GCV score
+#                                        NA))  #GCV score              # p-value
+    
+# colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+#colnames(summary.gam1)<-c("MODEL", "RESPONSE", "DRIVER", "logLik", "edf", "Pvalue")
+#colnames(summary.gam2)<-c("MODEL", "RESPONSE", "DRIVER", "AICc", "dev.expl","edf", "GCV", "Pvalue")
+colnames(summary.gam1)<-c("model_type", "ind", "press", "glm_AICc", "glm_dev.expl","glm_rsq", "glm_Pvalue")
+    
+    allSummary <- rbind(allSummary, summary.gam1) #, summary.gam2)
+  #} # resp.name loop
+#} # dri.name loop
+
+} ##imod loop (relevant combinations of driver/responses)
+
+#allSummary[,c(4:8)] <- apply(allSummary[,c(4:8)], 2, function(x) as.numeric(as.character(x)))
+bestList <- allSummary  #[!is.na(allSummary$edf) &
+                        # allSummary$edf > 1 &
+                        # allSummary$Pvalue < 0.05,]
+write.table(allSummary,file='wss.long.glm_summary',row.names=FALSE)
+write.csv(allSummary,'wss.long.glm_summary.csv',row.names=F)
+
+```
+
+## Wrangle results
+```{r}
+library(readr)
+library(tidyverse)
+
+###for whatever reason this code didn't work?
+
+
+# ess_long_glm_summary <- read_csv("JCT work/SS Ecosystem Report/SS-Ecosystem-Report/SS_INDperform/SS_INDperform/ess.long.glm_summary.csv")
+# ess_short_glm_summary <- read_csv("JCT work/SS Ecosystem Report/SS-Ecosystem-Report/SS_INDperform/SS_INDperform/ess.short.glm_summary.csv", 
+#     col_types = cols(AICc = col_number(), 
+#         Pvalue = col_number(), dev.expl = col_number()))
+# 
+# wss_long_glm_summary <- read_csv("JCT work/SS Ecosystem Report/SS-Ecosystem-Report/SS_INDperform/SS_INDperform/wss.long.glm_summary.csv", 
+#     col_types = cols(AICc = col_number(), 
+#         Pvalue = col_number(), dev.expl = col_number()))
+# 
+# wss_short_glm_summary <- read_csv("JCT work/SS Ecosystem Report/SS-Ecosystem-Report/SS_INDperform/SS_INDperform/wss.short.glm_summary.csv", 
+#     col_types = cols(AICc = col_number(), 
+#         Pvalue = col_number(), dev.expl = col_number()))
+
+##set up GLM and GAM data
+
+ess.long_glm_summary<-as_tibble(ess_long_glm_summary)
+ess.short_glm_summary<-as_tibble(ess_short_glm_summary)
+wss.long_glm_summary<-as_tibble(wss_long_glm_summary)
+wss.short_glm_summary<-as_tibble(wss_short_glm_summary)
+
+# names(ess.long_glm_summary)<-c ('model_type','ind', 'press', 'glm_aic', 'glm_dev.expl', 'glm_p_val')
+# names(ess.short_glm_summary)<-c ('model_type', 'ind', 'press', 'glm_aic', 'glm_dev.expl', 'glm_p_val')
+# names(wss.long_glm_summary)<-c ('model_type', 'ind', 'press', 'glm_aic', 'glm_dev.expl', 'glm_p_val')
+# names(wss.short_glm_summary)<-c ('model_type', 'ind', 'press', 'glm_aic', 'glm_dev.expl', 'glm_p_val')
+
+wss.long.m_all_tot<-rbind(wss.long.m_all1, wss.long.m_all2)
+wss.short.m_all_tot<-rbind(wss.short.m_all, wss.short.m_all_2)
+ess.long.m_all_tot<-rbind(ess.long.m_all1, ess.long.m_all2)
+ess.short.m_all_tot<-rbind(ess.short.m_all1, ess.short.m_all2)
+
+ess.long_glm_summary<-ess.long_glm_summary %>% unite("combo", ind:press, sep="-", remove=FALSE)
+ess.short_glm_summary<-ess.short_glm_summary %>% unite("combo", ind:press, sep="-", remove=FALSE)
+wss.long_glm_summary<-wss.long_glm_summary %>% unite("combo", ind:press, sep="-", remove=FALSE)
+wss.short_glm_summary<-wss.short_glm_summary %>% unite("combo", ind:press, sep="-", remove=FALSE)
+
+ess.long.m_all_tot<-ess.long.m_all_tot %>% unite("combo", ind:press, sep="-", remove=FALSE)
+ess.short.m_all_tot<-ess.short.m_all_tot %>% unite("combo", ind:press, sep="-", remove=FALSE)
+wss.long.m_all_tot<-wss.long.m_all_tot %>% unite("combo", ind:press, sep="-", remove=FALSE)
+wss.short.m_all_tot<-wss.short.m_all_tot %>% unite("combo", ind:press, sep="-", remove=FALSE)
+
+ess.long_gam_glm<-full_join(ess.long_glm_summary, ess.long.m_all_tot, by="combo")
+ess.short_gam_glm<-full_join(ess.short_glm_summary, ess.short.m_all_tot, by="combo")
+wss.long_gam_glm<-full_join(wss.long_glm_summary, wss.long.m_all_tot, by="combo")
+wss.short_gam_glm<-full_join(wss.short_glm_summary, wss.short.m_all_tot, by="combo")
+
+save(ess.long_gam_glm, file="ess.long_gam_glm.RData")
+save(ess.short_gam_glm, file="ess.short_gam_glm.RData")
+save(wss.long_gam_glm, file="wss.long_gam_glm.RData")
+save(wss.short_gam_glm, file="wss.short_gam_glm.RData")
+
+write_csv(ess.long_gam_glm, "ess.long_gam_glm.csv")
+write_csv(ess.short_gam_glm, "ess.short_gam_glm.csv")
+write_csv(wss.long_gam_glm, "wss.long_gam_glm.csv")
+write_csv(wss.short_gam_glm, "wss.short_gam_glm.csv")
+```
+
+## Query datasets
+```{r}
+
+# Linear fits
+ess.short.l_fits<-ess.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.019) %>%
+                dplyr::filter(is.na(id))
+
+wss.short.l_fits<-wss.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                 dplyr::filter(glm_rsq>0.019) %>%
+                dplyr::filter(is.na(id))
+
+#non-linear fits
+
+ess.short.nl_fits<-ess.short_gam_glm %>%
+                  dplyr::filter(!is.na(id))
+
+
+# Which significant thresholds were found?
+
+ess.short.thresh<-ess.short_gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
+
+ess.long.thresh<-ess.long_gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
+
+wss.short.thresh<-wss.short_gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
+
+wss.long.thresh<-wss.long_gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
+
+# are there any indicators not responding to pressures?
+ess.short.all.inds<-ess.short_gam_glm %>%
+                dplyr::select(ind.x) %>%
+                dplyr::distinct()
+ess.short.useful.inds<-ess.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (ind.x)%>%
+                dplyr::distinct()
+ess.short.useless.inds<- dplyr::anti_join(ess.short.all.inds, ess.short.useful.inds)
+
+ess.long.all.inds<-ess.long_gam_glm %>%
+                dplyr::select(ind.x) %>%
+                dplyr::distinct()
+ess.long.useful.inds<-ess.long_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (ind.x)%>%
+                dplyr::distinct()
+ess.long.useless.inds<- dplyr::anti_join(ess.long.all.inds, ess.long.useful.inds)
+
+wss.short.all.inds<-wss.short_gam_glm %>%
+                dplyr::select(ind.x) %>%
+                dplyr::distinct()
+wss.short.useful.inds<-wss.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (ind.x)%>%
+                dplyr::distinct()
+wss.short.useless.inds<- dplyr::anti_join(wss.short.all.inds, wss.short.useful.inds)
+
+wss.long.all.inds<-wss.long_gam_glm %>%
+                dplyr::select(ind.x) %>%
+                dplyr::distinct()
+wss.long.useful.inds<-wss.long_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (ind.x)%>%
+                dplyr::distinct()
+wss.long.useless.inds<- dplyr::anti_join(wss.long.all.inds, wss.long.useful.inds)
+
+
+SS.useless.inds<-cbind(ess.short.useless.inds,ess.long.useless.inds,  wss.short.useless.inds, wss.long.useless.inds)
+
+# are there any pressures not responding to indicators?
+
+ess.short.all.press<-ess.short_gam_glm %>%
+                    dplyr::select(press.x)%>%
+                    dplyr::distinct()
+ess.short.useful.press<-ess.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (press.x)%>%
+                dplyr::distinct()
+ess.short.useless.press<- dplyr::anti_join(ess.short.all.press, ess.short.useful.press)
+
+ess.long.all.press<-ess.long_gam_glm %>%
+                    dplyr::select(press.x)%>%
+                    dplyr::distinct()
+ess.long.useful.press<-ess.long_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (press.x)%>%
+                dplyr::distinct()
+ess.long.useless.press<- dplyr::anti_join(ess.long.all.press, ess.long.useful.press)
+
+wss.short.all.press<-wss.short_gam_glm %>%
+                    dplyr::select(press.x)%>%
+                    dplyr::distinct()
+wss.short.useful.press<-wss.short_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (press.x)%>%
+                dplyr::distinct()
+wss.short.useless.press<- dplyr::anti_join(wss.short.all.press, wss.short.useful.press)
+
+wss.long.all.press<-wss.long_gam_glm %>%
+                    dplyr::select(press.x)%>%
+                    dplyr::distinct()
+wss.long.useful.press<-wss.long_gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                dplyr::select (press.x)%>%
+                dplyr::distinct()
+wss.long.useless.press<- dplyr::anti_join(wss.long.all.press, wss.long.useful.press)
+
+      ##function to cbind columns with different lengths, filling with NAs
+require(plyr) # requires plyr for rbind.fill()
+cbind.fill <- function(...) {                                                                                                                                                       
+  transpoted <- lapply(list(...),t)                                                                                                                                                 
+  transpoted_dataframe <- lapply(transpoted, as.data.frame)                                                                                                                         
+  return (data.frame(t(rbind.fill(transpoted_dataframe))))                                                                                                                          
+} 
+
+SS.useless.press<-cbind.fill(ess.short.useless.press, ess.long.useless.press, wss.short.useless.press, wss.long.useless.press)
+
+# Is there any continuity across long and short time series or regions
+
+
+
 ```
 
