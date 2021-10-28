@@ -1515,10 +1515,10 @@ write_csv(wss.short_gam_glm, "wss.short_gam_glm.csv")
 ```{r}
 
 #USE RDATA FILES NOT CSV
-# load("ess.long_gam_glm.RData")
-# load("ess.short_gam_glm.RData")
-# load("wss.short_gam_glm.RData")
-# load("wss.long_gam_glm.RData")
+load("ess.long_gam_glm.RData")
+load("ess.short_gam_glm.RData")
+load("wss.short_gam_glm.RData")
+load("wss.long_gam_glm.RData")
 
 ##function to cbind columns with different lengths, filling with NAs
 require(plyr) # requires plyr for rbind.fill()
@@ -1596,7 +1596,7 @@ SS.l_fits<-cbind.fill(ess.short.l_fits_combo, ess.long.l_fits_combo, wss.short.l
 SS.names<-c("ess.short", "ess.long", "wss.short", "wss.long")
 colnames(SS.l_fits)<-SS.names
 
-write.csv(SS.l_fits, "SS.l_fits.csv")
+# write.csv(SS.l_fits, "SS.l_fits.csv")
 
 
 ```
@@ -1650,7 +1650,7 @@ SS.nl_fits<-cbind.fill(ess.short.nl_fits_combo, ess.long.nl_fits_combo, wss.shor
 SS.names<-c("ess.short", "ess.long", "wss.short", "wss.long")
 colnames(SS.nl_fits)<-SS.names
 
-write_csv(SS.nl_fits, "SS.nl_fits.csv")
+# write_csv(SS.nl_fits, "SS.nl_fits.csv")
 ```
 
 ### Useful/Useless inds
@@ -1695,10 +1695,13 @@ colnames(SS.useless.inds)<-SS.names
 
 SS.useful.inds<-cbind.fill(ess.short.useful.ind,ess.long.useful.ind,  wss.short.useful.ind, wss.long.useful.ind)
 
-colnames(SS.usefull.inds)<-SS.names
+colnames(SS.useful.inds)<-SS.names
+
+##common useful inds
+
 
 write_csv(SS.useless.inds, "SS.useless.inds.csv")
-
+write_csv(SS.useful.inds, "SS.useful.inds.csv")
 ```
 
 ### Useful/Useless press
@@ -1739,8 +1742,13 @@ wss.long.useless.press<- dplyr::anti_join(wss.long.all.press.x, wss.long.useful.
 
 SS.useless.press<-cbind.fill(ess.short.useless.press,ess.long.useless.press,  wss.short.useless.press, wss.long.useless.press)
 colnames(SS.useless.press)<-SS.names
+
 SS.useful.press<-cbind.fill(ess.short.useful.press,ess.long.useful.press,  wss.short.useful.press, wss.long.useful.press)
+
 colnames(SS.useful.press)<-SS.names
+
+write_csv(SS.useless.press, "SS.useless.press.csv")
+write_csv(SS.useful.press, "SS.useful.press.csv")
 
 ```
 
@@ -1770,12 +1778,45 @@ colnames(SS.thresh)<-SS.names
 ### Regional/SS continuity
 ```{r}
 # Is there any continuity across long and short time series or regions
+## Are there common linear fits?
 ess.common.l_fits<-intersect(SS.l_fits$ess.short, SS.l_fits$ess.long) #no answers because ess.long had no l_fits
 wss.common.l_fits<-intersect(SS.l_fits$wss.short, SS.l_fits$wss.long)
+
 SS.short.common.l_fits<-intersect(SS.l_fits$ess.short, SS.l_fits$wss.short)
 
-ess.common.nl_fits<-intersect(SS.nl_fits$ess.short, SS.nl_fits$ess.long) #no answers because ess.long had no l_fits
+## Are there common non-linear fits?
+ess.common.nl_fits<-intersect(SS.nl_fits$ess.short, SS.nl_fits$ess.long) 
 wss.common.nl_fits<-intersect(SS.nl_fits$wss.short, SS.nl_fits$wss.long)
 SS.short.common.nl_fits<-intersect(SS.nl_fits$ess.short, SS.nl_fits$wss.short)
+SS.long.common.nl_fits<-intersect(SS.nl_fits$ess.long, SS.nl_fits$wss.long)
+
+##common useful inds
+ess.common.useful.inds<-intersect(SS.useful.inds$ess.short, SS.useful.inds$ess.long)
+wss.common.useful.inds<-intersect(SS.useful.inds$wss.short, SS.useful.inds$wss.long)
+SS.short.common.useful.inds<-intersect(SS.useful.inds$ess.short, SS.useful.inds$wss.short)
+SS.long.common.useful.inds<- intersect(SS.useful.inds$ess.long, SS.useful.inds$wss.long)
+SS.common.useful.inds<-intersect(SS.short.common.useful.inds, SS.long.common.useful.inds)
+
+##common useless inds
+ess.common.useless.inds<-intersect(SS.useless.inds$ess.short, SS.useless.inds$ess.long)
+wss.common.useless.inds<-intersect(SS.useless.inds$wss.short, SS.useless.inds$wss.long)
+SS.short.common.useless.inds<-intersect(SS.useless.inds$ess.short, SS.useless.inds$wss.short)
+SS.long.common.useless.inds<- intersect(SS.useless.inds$ess.long, SS.useless.inds$wss.long)
+SS.common.useless.inds<-intersect(SS.short.common.useless.inds, SS.long.common.useless.inds)
+
+##common useful press
+ess.common.useful.press<-intersect(SS.useful.press$ess.short, SS.useful.press$ess.long)
+wss.common.useful.press<-intersect(SS.useful.press$wss.short, SS.useful.press$wss.long)
+SS.short.common.useful.press<-intersect(SS.useful.press$ess.short, SS.useful.press$wss.short)
+SS.long.common.useful.press<- intersect(SS.useful.press$ess.long, SS.useful.press$wss.long)
+SS.common.useful.press<-intersect(SS.short.common.useful.press, SS.long.common.useful.press)
+
+##common useless pressures
+ess.common.useless.press<-intersect(SS.useless.press$ess.short, SS.useless.press$ess.long)
+wss.common.useless.press<-intersect(SS.useless.press$wss.short, SS.useless.press$wss.long)
+SS.short.common.useless.press<-intersect(SS.useless.press$ess.short, SS.useless.press$wss.short)
+SS.long.common.useless.press<- intersect(SS.useless.press$ess.long, SS.useless.press$wss.long)
+SS.common.useless.press<-intersect(SS.short.common.useless.press, SS.long.common.useless.press)
+
 ```
 
