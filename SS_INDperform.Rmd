@@ -1511,119 +1511,16 @@ write_csv(wss.long_gam_glm, "wss.long_gam_glm.csv")
 write_csv(wss.short_gam_glm, "wss.short_gam_glm.csv")
 ```
 
-## Query datasets
+#Query datasets
 ```{r}
 
-# Linear fits
-ess.short.l_fits<-ess.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
-                dplyr::filter(glm_rsq>0.019) %>%
-                dplyr::filter(is.na(id))
+#USE RDATA FILES NOT CSV
+# load("ess.long_gam_glm.RData")
+# load("ess.short_gam_glm.RData")
+# load("wss.short_gam_glm.RData")
+# load("wss.long_gam_glm.RData")
 
-wss.short.l_fits<-wss.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                 dplyr::filter(glm_rsq>0.019) %>%
-                dplyr::filter(is.na(id))
-
-#non-linear fits
-
-ess.short.nl_fits<-ess.short_gam_glm %>%
-                  dplyr::filter(!is.na(id))
-
-
-# Which significant thresholds were found?
-
-ess.short.thresh<-ess.short_gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
-
-ess.long.thresh<-ess.long_gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
-
-wss.short.thresh<-wss.short_gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
-
-wss.long.thresh<-wss.long_gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
-
-# are there any indicators not responding to pressures?
-ess.short.all.inds<-ess.short_gam_glm %>%
-                dplyr::select(ind.x) %>%
-                dplyr::distinct()
-ess.short.useful.inds<-ess.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (ind.x)%>%
-                dplyr::distinct()
-ess.short.useless.inds<- dplyr::anti_join(ess.short.all.inds, ess.short.useful.inds)
-
-ess.long.all.inds<-ess.long_gam_glm %>%
-                dplyr::select(ind.x) %>%
-                dplyr::distinct()
-ess.long.useful.inds<-ess.long_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (ind.x)%>%
-                dplyr::distinct()
-ess.long.useless.inds<- dplyr::anti_join(ess.long.all.inds, ess.long.useful.inds)
-
-wss.short.all.inds<-wss.short_gam_glm %>%
-                dplyr::select(ind.x) %>%
-                dplyr::distinct()
-wss.short.useful.inds<-wss.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (ind.x)%>%
-                dplyr::distinct()
-wss.short.useless.inds<- dplyr::anti_join(wss.short.all.inds, wss.short.useful.inds)
-
-wss.long.all.inds<-wss.long_gam_glm %>%
-                dplyr::select(ind.x) %>%
-                dplyr::distinct()
-wss.long.useful.inds<-wss.long_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (ind.x)%>%
-                dplyr::distinct()
-wss.long.useless.inds<- dplyr::anti_join(wss.long.all.inds, wss.long.useful.inds)
-
-
-SS.useless.inds<-cbind(ess.short.useless.inds,ess.long.useless.inds,  wss.short.useless.inds, wss.long.useless.inds)
-
-# are there any pressures not responding to indicators?
-
-ess.short.all.press<-ess.short_gam_glm %>%
-                    dplyr::select(press.x)%>%
-                    dplyr::distinct()
-ess.short.useful.press<-ess.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (press.x)%>%
-                dplyr::distinct()
-ess.short.useless.press<- dplyr::anti_join(ess.short.all.press, ess.short.useful.press)
-
-ess.long.all.press<-ess.long_gam_glm %>%
-                    dplyr::select(press.x)%>%
-                    dplyr::distinct()
-ess.long.useful.press<-ess.long_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (press.x)%>%
-                dplyr::distinct()
-ess.long.useless.press<- dplyr::anti_join(ess.long.all.press, ess.long.useful.press)
-
-wss.short.all.press<-wss.short_gam_glm %>%
-                    dplyr::select(press.x)%>%
-                    dplyr::distinct()
-wss.short.useful.press<-wss.short_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (press.x)%>%
-                dplyr::distinct()
-wss.short.useless.press<- dplyr::anti_join(wss.short.all.press, wss.short.useful.press)
-
-wss.long.all.press<-wss.long_gam_glm %>%
-                    dplyr::select(press.x)%>%
-                    dplyr::distinct()
-wss.long.useful.press<-wss.long_gam_glm %>%
-                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
-                dplyr::select (press.x)%>%
-                dplyr::distinct()
-wss.long.useless.press<- dplyr::anti_join(wss.long.all.press, wss.long.useful.press)
-
-      ##function to cbind columns with different lengths, filling with NAs
+##function to cbind columns with different lengths, filling with NAs
 require(plyr) # requires plyr for rbind.fill()
 cbind.fill <- function(...) {                                                                                                                                                       
   transpoted <- lapply(list(...),t)                                                                                                                                                 
@@ -1631,11 +1528,254 @@ cbind.fill <- function(...) {
   return (data.frame(t(rbind.fill(transpoted_dataframe))))                                                                                                                          
 } 
 
-SS.useless.press<-cbind.fill(ess.short.useless.press, ess.long.useless.press, wss.short.useless.press, wss.long.useless.press)
+#remove MargalefRichness & DFA 3
+ess.short.gam_glm<-ess.short_gam_glm %>% 
+                dplyr::filter(ind.x !="MargalefRichness_ALL" & press.x != "DFA3")
+                
+ess.long.gam_glm<-ess.long_gam_glm %>% 
+                dplyr::filter(ind.x !="MargalefRichness_ALL" & press.x != "DFA3")
+wss.short.gam_glm<-wss.short_gam_glm %>% 
+                dplyr::filter(ind.x !="MargalefRichness_ALL" & press.x != "DFA3")
+wss.long.gam_glm<-wss.long_gam_glm %>% 
+                dplyr::filter(ind.x !="MargalefRichness_ALL" & press.x != "DFA3")
 
+
+```
+
+###Linear fits
+```{r}
+# Linear fits
+
+
+ess.short.l_fits<-ess.short.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                dplyr::filter(is.na(id))# %>% select(combo)
+              
+
+ess.long.l_fits<-ess.long.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                 dplyr::filter(is.na(id))#%>% select(combo)
+               
+
+wss.short.l_fits<-wss.short.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                 dplyr::filter(glm_rsq>0.019) %>%
+                 dplyr::filter(is.na(id))#%>% select(combo)
+               
+wss.long.l_fits<-wss.long.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                 dplyr::filter(is.na(id))#%>% select(combo)
+                
+ess.short.l_fits_combo<-ess.short.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                dplyr::filter(is.na(id)) %>% select(combo)
+              
+
+ess.long.l_fits_combo<-ess.long.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                 dplyr::filter(is.na(id)) %>% select(combo)
+               
+
+wss.short.l_fits_combo<-wss.short.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05, na.rm=TRUE)%>%
+                 dplyr::filter(glm_rsq>0.019) %>%
+                 dplyr::filter(is.na(id)) %>% select(combo)
+               
+wss.long.l_fits_combo<-wss.long.gam_glm %>%
+                dplyr::filter(glm_Pvalue < 0.05,na.rm=TRUE)%>%
+                dplyr::filter(glm_rsq>0.19) %>%
+                 dplyr::filter(is.na(id)) %>% select(combo)
+
+SS.l_fits<-cbind.fill(ess.short.l_fits_combo, ess.long.l_fits_combo, wss.short.l_fits_combo, wss.long.l_fits_combo)
+
+SS.names<-c("ess.short", "ess.long", "wss.short", "wss.long")
+colnames(SS.l_fits)<-SS.names
+
+write.csv(SS.l_fits, "SS.l_fits.csv")
+
+
+```
+
+### non-linear fits
+```{r}
+#non-linear fits
+
+ess.short.nl_fits<-ess.short.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+
+ess.long.nl_fits<-ess.long.gam_glm %>%
+                 dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+
+wss.short.nl_fits<-wss.short.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+
+wss.long.nl_fits<-wss.long.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+
+ess.short.nl_fits_combo<-ess.short.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19) %>% select(combo)
+
+ess.long.nl_fits_combo<-ess.long.gam_glm %>%
+                 dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19) %>% select(combo)
+
+wss.short.nl_fits_combo<-wss.short.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19) %>% select(combo)
+
+wss.long.nl_fits_combo<-wss.long.gam_glm %>%
+                  dplyr::filter(!is.na(id)) %>%
+                  dplyr::filter(p_val<0.05) %>%
+                  dplyr::filter(r_sq>0.19) %>% select(combo)
+
+SS.nl_fits<-cbind.fill(ess.short.nl_fits_combo, ess.long.nl_fits_combo, wss.short.nl_fits_combo, wss.long.nl_fits_combo)
+
+SS.names<-c("ess.short", "ess.long", "wss.short", "wss.long")
+colnames(SS.nl_fits)<-SS.names
+
+write_csv(SS.nl_fits, "SS.nl_fits.csv")
+```
+
+### Useful/Useless inds
+```{r}
+# are there any indicators not responding to pressures?
+  
+ess.short.l_fits_ind<-distinct(ess.short.l_fits, ind.x)
+ess.short.nl_fits_ind<-distinct(ess.short.nl_fits, ind.x)
+ess.short.useful.ind<-full_join(ess.short.l_fits_ind, ess.short.nl_fits_ind)
+
+ess.short.all.ind.x<-distinct(ess.short.gam_glm, ind.x) 
+
+ess.short.useless.ind<- dplyr::anti_join(ess.short.all.ind.x, ess.short.useful.ind)
+
+ess.long.l_fits_ind<-distinct(ess.long.l_fits, ind.x)
+ess.long.nl_fits_ind<-distinct(ess.long.nl_fits, ind.x)
+ess.long.useful.ind<-full_join(ess.long.l_fits_ind, ess.long.nl_fits_ind)
+
+ess.long.all.ind.x<-distinct(ess.long.gam_glm, ind.x) 
+
+ess.long.useless.ind<- dplyr::anti_join(ess.long.all.ind.x, ess.long.useful.ind)
+
+wss.short.l_fits_ind<-distinct(wss.short.l_fits, ind.x)
+wss.short.nl_fits_ind<-distinct(wss.short.nl_fits, ind.x)
+wss.short.useful.ind<-full_join(wss.short.l_fits_ind, wss.short.nl_fits_ind)
+
+wss.short.all.ind.x<-distinct(wss.short.gam_glm, ind.x) 
+
+wss.short.useless.ind<- dplyr::anti_join(wss.short.all.ind.x, wss.short.useful.ind)
+
+wss.long.l_fits_ind<-distinct(wss.long.l_fits, ind.x)
+wss.long.nl_fits_ind<-distinct(wss.long.nl_fits, ind.x)
+wss.long.useful.ind<-full_join(wss.long.l_fits_ind, wss.long.nl_fits_ind)
+
+wss.long.all.ind.x<-distinct(wss.long.gam_glm, ind.x) 
+
+wss.long.useless.ind<- dplyr::anti_join(wss.long.all.ind.x, wss.long.useful.ind)
+
+SS.useless.inds<-cbind.fill(ess.short.useless.ind,ess.long.useless.ind,  wss.short.useless.ind, wss.long.useless.ind)
+
+colnames(SS.useless.inds)<-SS.names
+
+SS.useful.inds<-cbind.fill(ess.short.useful.ind,ess.long.useful.ind,  wss.short.useful.ind, wss.long.useful.ind)
+
+colnames(SS.usefull.inds)<-SS.names
+
+write_csv(SS.useless.inds, "SS.useless.inds.csv")
+
+```
+
+### Useful/Useless press
+```{r}
+# are there any pressures not responding to indicators?
+
+ess.short.l_fits_press<-distinct(ess.short.l_fits, press.x)
+ess.short.nl_fits_press<-distinct(ess.short.nl_fits, press.x)
+ess.short.useful.press<-full_join(ess.short.l_fits_press, ess.short.nl_fits_press)
+
+ess.short.all.press.x<-distinct(ess.short.gam_glm, press.x) 
+
+ess.short.useless.press<- dplyr::anti_join(ess.short.all.press.x, ess.short.useful.press)
+
+ess.long.l_fits_press<-distinct(ess.long.l_fits, press.x)
+ess.long.nl_fits_press<-distinct(ess.long.nl_fits, press.x)
+ess.long.useful.press<-full_join(ess.long.l_fits_press, ess.long.nl_fits_press)
+
+ess.long.all.press.x<-distinct(ess.long.gam_glm, press.x) 
+
+ess.long.useless.press<- dplyr::anti_join(ess.long.all.press.x, ess.long.useful.press)
+
+wss.short.l_fits_press<-distinct(wss.short.l_fits, press.x)
+wss.short.nl_fits_press<-distinct(wss.short.nl_fits, press.x)
+wss.short.useful.press<-full_join(wss.short.l_fits_press, wss.short.nl_fits_press)
+
+wss.short.all.press.x<-distinct(wss.short.gam_glm, press.x) 
+
+wss.short.useless.press<- dplyr::anti_join(wss.short.all.press.x, wss.short.useful.press)
+
+wss.long.l_fits_press<-distinct(wss.long.l_fits, press.x)
+wss.long.nl_fits_press<-distinct(wss.long.nl_fits, press.x)
+wss.long.useful.press<-full_join(wss.long.l_fits_press, wss.long.nl_fits_press)
+
+wss.long.all.press.x<-distinct(wss.long.gam_glm, press.x) 
+
+wss.long.useless.press<- dplyr::anti_join(wss.long.all.press.x, wss.long.useful.press)
+
+SS.useless.press<-cbind.fill(ess.short.useless.press,ess.long.useless.press,  wss.short.useless.press, wss.long.useless.press)
+colnames(SS.useless.press)<-SS.names
+SS.useful.press<-cbind.fill(ess.short.useful.press,ess.long.useful.press,  wss.short.useful.press, wss.long.useful.press)
+colnames(SS.useful.press)<-SS.names
+
+```
+
+### significant thresholds
+```{r}
+# Which significant thresholds were found?
+
+ess.short.thresh<-ess.short.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+ess.long.thresh<-ess.long.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+
+wss.short.thresh<-wss.short.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+
+wss.long.thresh<-wss.long.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+SS.thresh<-cbind.fill(ess.short.thresh, ess.long.thresh, wss.short.thresh, wss.long.thresh)
+colnames(SS.thresh)<-SS.names
+
+```
+
+### Regional/SS continuity
+```{r}
 # Is there any continuity across long and short time series or regions
+ess.common.l_fits<-intersect(SS.l_fits$ess.short, SS.l_fits$ess.long) #no answers because ess.long had no l_fits
+wss.common.l_fits<-intersect(SS.l_fits$wss.short, SS.l_fits$wss.long)
+SS.short.common.l_fits<-intersect(SS.l_fits$ess.short, SS.l_fits$wss.short)
 
-
-
+ess.common.nl_fits<-intersect(SS.nl_fits$ess.short, SS.nl_fits$ess.long) #no answers because ess.long had no l_fits
+wss.common.nl_fits<-intersect(SS.nl_fits$wss.short, SS.nl_fits$wss.long)
+SS.short.common.nl_fits<-intersect(SS.nl_fits$ess.short, SS.nl_fits$wss.short)
 ```
 
