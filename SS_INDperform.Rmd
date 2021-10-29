@@ -1607,50 +1607,42 @@ colnames(SS.l_fits)<-SS.names
 
 ess.short.nl_fits<-ess.short.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+                  dplyr::filter(p_val<0.05) #%>% dplyr::filter(r_sq>0.19)#%>% select(combo)
 
 ess.long.nl_fits<-ess.long.gam_glm %>%
                  dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+                  dplyr::filter(p_val<0.05) #%>% dplyr::filter(r_sq>0.19)#%>% select(combo)
 
 wss.short.nl_fits<-wss.short.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+                  dplyr::filter(p_val<0.05) #%>% dplyr::filter(r_sq>0.19)#%>% select(combo)
 
 wss.long.nl_fits<-wss.long.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19)#%>% select(combo)
+                  dplyr::filter(p_val<0.05) #%>% dplyr::filter(r_sq>0.19)#%>% select(combo)
 
 ess.short.nl_fits_combo<-ess.short.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19) %>% select(combo)
+                  dplyr::filter(p_val<0.05)  %>% select(combo)
 
 ess.long.nl_fits_combo<-ess.long.gam_glm %>%
                  dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19) %>% select(combo)
+                  dplyr::filter(p_val<0.05)  %>% select(combo)
 
 wss.short.nl_fits_combo<-wss.short.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19) %>% select(combo)
+                  dplyr::filter(p_val<0.05)  %>% select(combo)
 
 wss.long.nl_fits_combo<-wss.long.gam_glm %>%
                   dplyr::filter(!is.na(id)) %>%
-                  dplyr::filter(p_val<0.05) %>%
-                  dplyr::filter(r_sq>0.19) %>% select(combo)
+                  dplyr::filter(p_val<0.05)%>% select(combo)
 
 SS.nl_fits<-cbind.fill(ess.short.nl_fits_combo, ess.long.nl_fits_combo, wss.short.nl_fits_combo, wss.long.nl_fits_combo)
 
 SS.names<-c("ess.short", "ess.long", "wss.short", "wss.long")
 colnames(SS.nl_fits)<-SS.names
 
-# write_csv(SS.nl_fits, "SS.nl_fits.csv")
+ write_csv(SS.nl_fits, "SS.nl_fits.csv")
 ```
 
 ### Useful/Useless inds
@@ -1755,23 +1747,39 @@ write_csv(SS.useful.press, "SS.useful.press.csv")
 ### significant thresholds
 ```{r}
 # Which significant thresholds were found?
-
 ess.short.thresh<-ess.short.gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
 
 ess.long.thresh<-ess.long.gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
 
 
 wss.short.thresh<-wss.short.gam_glm %>% 
-                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
 
 
 wss.long.thresh<-wss.long.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)
+
+
+ess.short.thresh_combo<-ess.short.gam_glm %>% 
                   dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
 
-SS.thresh<-cbind.fill(ess.short.thresh, ess.long.thresh, wss.short.thresh, wss.long.thresh)
+ess.long.thresh_combo<-ess.long.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+
+wss.short.thresh_combo<-wss.short.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+
+wss.long.thresh_combo<-wss.long.gam_glm %>% 
+                  dplyr::filter(interaction== "TRUE", na.rm=TRUE)%>% select(combo)
+
+SS.thresh<-cbind.fill(ess.short.thresh_combo, ess.long.thresh_combo, wss.short.thresh_combo, wss.long.thresh_combo)
 colnames(SS.thresh)<-SS.names
+
+# write_csv(SS.thresh, "SS.thresh.csv")
 
 ```
 
@@ -1817,6 +1825,27 @@ wss.common.useless.press<-intersect(SS.useless.press$wss.short, SS.useless.press
 SS.short.common.useless.press<-intersect(SS.useless.press$ess.short, SS.useless.press$wss.short)
 SS.long.common.useless.press<- intersect(SS.useless.press$ess.long, SS.useless.press$wss.long)
 SS.common.useless.press<-intersect(SS.short.common.useless.press, SS.long.common.useless.press)
+
+
+##common thresholds?
+ess.common.thresh<-intersect(SS.thresh$ess.short, SS.thresh$ess.long)
+wss.common.thresh<-intersect(SS.thresh$wss.short, SS.thresh$wss.long)
+SS.short.common.thresh<-intersect(SS.thresh$ess.short, SS.thresh$wss.short)
+SS.long.common.thresh<- intersect(SS.thresh$ess.long, SS.thresh$wss.long)
+SS.common.thresh<-intersect(SS.short.common.thresh, SS.long.common.thresh)
+
+SS.common.thresh.info<-cbind.fill(ess.common.thresh, wss.common.thresh, SS.short.common.thresh, SS.long.common.thresh, SS.common.thresh)
+SS.common.names<-c("ess.common.thresh", "wss.common.thresh", "SS.short.common.thresh", "SS.long.common.thresh", "SS.common.thresh")
+
+colnames(SS.common.thresh.info)<-SS.common.names
+
+# write_csv(ess.common.thresh, "ess.common.thresh.csv")
+# write_csv(wss.common.thresh, "wss.common.thresh.csv")
+# write_csv(SS.short.common.thresh, "SS.short.common.thresh.csv")
+# write_csv(SS.long.common.thresh, "SS.long.common.thresh.csv")
+# write_csv(SS.common.thresh, "SS.common.thresh.csv")
+write_csv(SS.common.thresh.info, "SS.common.thresh.info.csv")
+
 
 ```
 
