@@ -8,13 +8,15 @@ output: html_document
 ## set up libraries
 ```{r setup, include=FALSE}
 library(DT)
-# library(mgcv)
+library(mgcv)
 library(tidyverse)
 library(MARSS)
 library(reshape2)
 # require(meboot)
-# library(mgcv)
+library(ggplot2)
 library(INDperform)
+library(grid)
+library (gridExtra)
 ```
 
 
@@ -1846,6 +1848,129 @@ colnames(SS.common.thresh.info)<-SS.common.names
 # write_csv(SS.common.thresh, "SS.common.thresh.csv")
 write_csv(SS.common.thresh.info, "SS.common.thresh.info.csv")
 
+
+```
+
+### Count of useful indicators
+```{r}
+#for each region/timeseries, how many times is a indicator/pressure useful? 
+
+##combine l and nonlinear
+ess.short.useful_fits<-rbind(ess.short.l_fits, ess.short.nl_fits)
+
+ess.short.uf<-ess.short.useful_fits %>% 
+              count(ind.x)
+
+hist_ind_ess.short<-ggplot(data.frame(ess.short.uf), aes(x=reorder(ind.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="ESS short", y="", x="Ecological Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+wss.short.useful_fits<-rbind(wss.short.l_fits, wss.short.nl_fits)
+
+wss.short.uf<-wss.short.useful_fits %>% 
+              count(ind.x)
+
+hist_ind_wss.short<-ggplot(data.frame(wss.short.uf), aes(x=reorder(ind.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="WSS short", y="", x="Ecological Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+ess.long.useful_fits<-rbind(ess.long.l_fits, ess.long.nl_fits)
+
+ess.long.uf<-ess.long.useful_fits %>% 
+              count(ind.x)
+
+hist_ind_ess.long<-ggplot(data.frame(ess.long.uf), aes(x=reorder(ind.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="ESS long", y="", x="Ecological Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+wss.long.useful_fits<-rbind(wss.long.l_fits, wss.long.nl_fits)
+
+wss.long.uf<-wss.long.useful_fits %>% 
+              count(ind.x)
+
+hist_ind_wss.long<-ggplot(data.frame(wss.long.uf), aes(x=reorder(ind.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="WSS long", y="", x="Ecological Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+grid.newpage()
+
+jpeg(filename="SS_hist_useful_inds_count.jpeg", width=10, height=10, units="in", quality=100,res=600)
+grid.arrange(hist_ind_ess.short, hist_ind_wss.short,hist_ind_ess.long, hist_ind_wss.long, ncol = 2)
+
+dev.off()
+
+
+```
+
+### Count of useful pressures
+```{r}
+#histogram for each pressures 
+ess.short.useful_fits<-rbind(ess.short.l_fits, ess.short.nl_fits)
+
+ess.short.ufp<-ess.short.useful_fits %>% 
+              count(press.x)
+
+hist_press_ess.short<-ggplot(data.frame(ess.short.ufp), aes(x=reorder(press.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="ESS short", y="", x="Pressure Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+wss.short.useful_fits<-rbind(wss.short.l_fits, wss.short.nl_fits)
+
+wss.short.ufp<-wss.short.useful_fits %>% 
+              count(press.x)
+
+hist_press_wss.short<-ggplot(data.frame(wss.short.ufp), aes(x=reorder(press.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="WSS short", y="", x="Pressure Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+ess.long.useful_fits<-rbind(ess.long.l_fits, ess.long.nl_fits)
+
+ess.long.ufp<-ess.long.useful_fits %>% 
+              count(press.x)
+
+hist_press_ess.long<-ggplot(data.frame(ess.long.ufp), aes(x=reorder(press.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="ESS long", y="", x="Pressure Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+wss.long.useful_fits<-rbind(wss.long.l_fits, wss.long.nl_fits)
+
+wss.long.ufp<-wss.long.useful_fits %>% 
+              count(press.x)
+
+hist_press_wss.long<-ggplot(data.frame(wss.long.ufp), aes(x=reorder(press.x, n), y=n))+
+                          geom_bar(stat="identity")+
+                          #geom_text(aes(label=n), color="white")  +
+                          labs(title="WSS long", y="", x="Pressure Indicator")+
+                          theme(axis.text.x=element_text(angle=90))+
+                          coord_flip()
+
+grid.newpage()
+
+jpeg(filename="SS_hist_useful_press_count.jpeg", width=10, height=10, units="in", quality=100,res=600)
+grid.arrange(hist_press_ess.short, hist_press_wss.short,hist_press_ess.long, hist_press_wss.long, ncol = 2)
+
+dev.off()
 
 ```
 
