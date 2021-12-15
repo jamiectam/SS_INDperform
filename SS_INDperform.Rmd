@@ -1309,7 +1309,7 @@ colnames(summary.gam1)<-c("model_type", "ind", "press", "glm_AICc", "glm_dev.exp
 bestList <- allSummary  #[!is.na(allSummary$edf) &
                         # allSummary$edf > 1 &
                         # allSummary$Pvalue < 0.05,]
-write.table(allSummary,file='ess.short.glm_summary',row.names=FALSE)
+write.table(allSummary,file='ess.short.glm_summary.RData',row.names=FALSE)
 write.csv(allSummary,'ess.short.glm_summary.csv',row.names=F)
 
 ```
