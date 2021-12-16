@@ -816,8 +816,8 @@ bestList <- allSummary  #[!is.na(allSummary$edf) &
                         # allSummary$edf > 1 &
                         # allSummary$Pvalue < 0.05,]
 wss.short.glm_summary_coli<-allSummary
-write.table(allSummary,file='wss.short.glm_summary_coli',row.names=FALSE)
-write.csv(allSummary,'wss.short.glm_summary.csv_coli',row.names=F)
+save(wss.short.glm_summary_coli,file='wss.short.glm_summary_coli.RData')
+write_csv(wss.short.glm_summary_coli,'wss.short.glm_summary.csv_coli')
 ```
 
 #GLM ess.short
@@ -1009,8 +1009,8 @@ bestList <- allSummary  #[!is.na(allSummary$edf) &
                         # allSummary$Pvalue < 0.05,]
 
 ess.short.glm_summary_coli<-allSummary
-write.table(allSummary,file='ess.short.glm_summary_coli.RData',row.names=FALSE)
-write.csv(allSummary,'ess.short.glm_summary_coli.csv',row.names=F)
+save (ess.short.glm_summary_coli,file='ess.short.glm_summary_coli.RData')
+write_csv(ess.short.glm_summary_coli,'ess.short.glm_summary_coli.csv')
 
 ```
 
@@ -1191,8 +1191,8 @@ bestList <- allSummary  #[!is.na(allSummary$edf) &
                         # allSummary$edf > 1 &
                         # allSummary$Pvalue < 0.05,]
 ess.long.glm_summary_coli<-allSummary
-write.table(allSummary,file='ess.long.glm_summary.RData',row.names=FALSE)
-write.csv(allSummary,'ess.long.glm_summary.csv',row.names=F)
+save(ess.long.glm_summary_coli,file='ess.long.glm_summary.RData')
+write_csv(ess.long.glm_summary_coli,'ess.long.glm_summary.csv')
 
 ```
 
@@ -1372,8 +1372,8 @@ bestList <- allSummary  #[!is.na(allSummary$edf) &
                         # allSummary$edf > 1 &
                         # allSummary$Pvalue < 0.05,]
 wss.long.glm_summary_coli<-allSummary
-write.table(allSummary,file='wss.long.glm_summary_coli.RData',row.names=FALSE)
-write.csv(allSummary,'wss.long.glm_summary_coli.csv',row.names=F)
+save (wss.long.glm_summary_coli,file='wss.long.glm_summary_coli.RData')
+write_csv(wss.long.glm_summary_coli,'wss.long.glm_summary_coli.csv')
 
 ```
 
